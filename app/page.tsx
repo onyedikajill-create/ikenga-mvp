@@ -117,15 +117,15 @@ export default function LandingPage() {
           <div className="flex items-center justify-between h-16">
             <Link href="/" className="flex items-center gap-3">
               <Image 
-                src="/logos/ikenga-logo-transparent.jpg" 
+                src="/logos/ikenga-ai-logo-dark.png" 
                 alt="IKENGA AI" 
-                width={40} 
-                height={40}
+                width={44} 
+                height={44}
                 className="rounded-lg"
               />
               <div className="flex flex-col">
                 <span className="text-xl font-bold text-gold">IKENGA</span>
-                <span className="text-[10px] text-muted-foreground -mt-1">Justice Intelligence</span>
+                <span className="text-[9px] text-muted-foreground -mt-1 leading-tight">United Justice Response<br/>Intelligence System</span>
               </div>
             </Link>
             <div className="hidden md:flex items-center gap-8">
@@ -538,14 +538,14 @@ export default function LandingPage() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-3">
               <Image 
-                src="/logos/ikenga-logo-transparent.jpg" 
+                src="/logos/ikenga-ai-logo-dark.png" 
                 alt="IKENGA AI" 
-                width={32} 
-                height={32}
+                width={36} 
+                height={36}
                 className="rounded-lg"
               />
               <span className="text-lg font-bold text-gold">IKENGA</span>
-              <span className="text-sm text-muted-foreground">Justice Intelligence</span>
+              <span className="text-sm text-muted-foreground">United Justice Response Intelligence System</span>
             </div>
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
               <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
