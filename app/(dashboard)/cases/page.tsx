@@ -49,8 +49,9 @@ export default async function CasesPage() {
   const cases = (casesResult.data || []) as Case[]
   const profile = profileResult.data as Profile | null
   
-  const isPro = profile?.subscription_tier === 'pro_monthly' || profile?.subscription_tier === 'pro_annual'
-  const canCreateCase = isPro || cases.length < (profile?.total_cases_allowed || 1)
+  const isPro = profile?.subscription_tier && ['pro_monthly', 'pro_annual', 'pro_lifetime', 'pro_one_time'].includes(profile.subscription_tier)
+  const activeCases = cases.filter(c => !['closed', 'archived', 'withdrawn'].includes(c.status))
+  const canCreateCase = isPro || activeCases.length < 1
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -72,11 +73,11 @@ export default async function CasesPage() {
           </Link>
         ) : (
           <Link
-            href="/settings/billing"
+            href="/pricing"
             className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gold/20 text-gold font-semibold hover:bg-gold/30 transition-all border border-gold/30"
           >
             <Crown className="w-5 h-5" />
-            Upgrade for More Cases
+            Upgrade for Unlimited Cases - £49
           </Link>
         )}
       </div>
@@ -186,26 +187,26 @@ export default async function CasesPage() {
         </div>
       )}
 
-      {/* Case Limit Info */}
-      {!isPro && cases.length > 0 && (
+      {/* Case Limit Info - Free Tier Upgrade Prompt */}
+      {!isPro && activeCases.length > 0 && (
         <div className="p-4 rounded-xl bg-gold/5 border border-gold/20">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-3">
               <Crown className="w-5 h-5 text-gold" />
               <div>
                 <p className="font-medium text-foreground">
-                  {cases.length} of {profile?.total_cases_allowed || 1} case{(profile?.total_cases_allowed || 1) > 1 ? 's' : ''} used
+                  Free tier: {activeCases.length} of 1 active case used
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Upgrade to Pro for unlimited cases and AI features
+                  Upgrade to Pro for unlimited cases + AI Forensic Finder + Document Export
                 </p>
               </div>
             </div>
             <Link
-              href="/settings/billing"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gold text-black font-semibold hover:bg-gold-light transition-all text-sm"
+              href="/pricing"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gold text-black font-semibold hover:bg-gold-light transition-all text-sm gold-glow-sm"
             >
-              Upgrade to Pro
+              Get Pro - £49 One-Time
             </Link>
           </div>
         </div>

@@ -296,10 +296,28 @@ export const COMPENSATION_CAPS = {
   compensatory_cap_yearly: 52 // Or 52 weeks' pay if lower
 } as const
 
-// Pricing
+// Pricing - UJU Cycle Optimized
 export const PRICING = {
-  pro_monthly: 9.99,
-  pro_annual: 79,
-  one_time_forensic: 49,
-  one_time_documents: 29
+  pro_one_time: 49,          // Main revenue driver
+  pro_monthly: 19,           // Optional premium support
+  lifetime: 99,              // High-ticket option
+  one_time_forensic: 29,     // Add-on
+  one_time_documents: 19     // Add-on
 } as const
+
+// Free tier limits
+export const FREE_TIER_LIMITS = {
+  max_active_cases: 1,
+  max_storage_mb: 100,
+  features: ['evidence_vault', 'timeline_builder', 'compensation_calculator', 'et1_assistant']
+} as const
+
+// Pro tier features
+export const PRO_FEATURES = [
+  'unlimited_cases',
+  'forensic_auditor',
+  'document_generator',
+  'hearing_prep',
+  'export_word_pdf',
+  'priority_support'
+] as const
