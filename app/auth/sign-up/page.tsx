@@ -108,11 +108,12 @@ export default function SignUpPage() {
         <div className="relative z-10">
           <Link href="/" className="flex items-center gap-3">
             <Image 
-              src="/logos/ujris-logo-dark.jpg" 
+              src="/logos/ujris-logo-transparent.jpg" 
               alt="UJRIS" 
               width={60} 
               height={60}
               className="rounded-lg"
+              style={{ width: 'auto', height: 'auto' }}
             />
             <div>
               <h1 className="text-2xl font-bold"><span className="text-gold">UJ</span><span className="text-white">RIS</span></h1>
@@ -169,11 +170,12 @@ export default function SignUpPage() {
           <div className="lg:hidden flex justify-center mb-8">
             <Link href="/" className="flex items-center gap-3">
               <Image 
-                src="/logos/ujris-logo-dark.jpg" 
+                src="/logos/ujris-logo-transparent.jpg" 
                 alt="UJRIS" 
                 width={50} 
                 height={50}
                 className="rounded-lg"
+                style={{ width: 'auto', height: 'auto' }}
               />
               <span className="text-2xl font-bold"><span className="text-gold">UJ</span><span className="text-white">RIS</span></span>
             </Link>

@@ -53,11 +53,12 @@ export default function LandingPage() {
           <div className="flex items-center justify-between h-16">
             <Link href="/" className="flex items-center gap-3">
               <Image 
-                src="/logos/ujris-logo-dark.jpg" 
+                src="/logos/ujris-logo-transparent.jpg" 
                 alt="UJRIS" 
                 width={44} 
                 height={44}
                 className="rounded-lg"
+                style={{ width: 'auto', height: 'auto' }}
               />
               <span className="text-xl font-bold">
                 <span className="text-[#d4a853]">UJ</span>
@@ -477,11 +478,12 @@ export default function LandingPage() {
             <div>
               <div className="flex items-center gap-3 mb-4">
                 <Image 
-                  src="/logos/ujris-logo-dark.jpg" 
+                  src="/logos/ujris-logo-transparent.jpg" 
                   alt="UJRIS" 
                   width={36} 
                   height={36}
                   className="rounded-lg"
+                  style={{ width: 'auto', height: 'auto' }}
                 />
                 <span className="text-lg font-bold">
                   <span className="text-[#d4a853]">UJ</span>

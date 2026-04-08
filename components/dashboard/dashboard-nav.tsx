@@ -105,11 +105,12 @@ export function DashboardNav({ user, profile }: DashboardNavProps) {
           {/* Logo */}
           <div className="flex items-center gap-3 px-6 py-5 border-b border-border">
             <Image 
-              src="/logos/ujris-logo-dark.jpg" 
+              src="/logos/ujris-logo-transparent.jpg" 
               alt="UJRIS" 
               width={40} 
               height={40}
               className="rounded-lg"
+              style={{ width: 'auto', height: 'auto' }}
             />
             <div>
               <h1 className="text-lg font-bold"><span className="text-gold">UJ</span>RIS</h1>
