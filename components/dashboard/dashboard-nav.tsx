@@ -105,14 +105,14 @@ export function DashboardNav({ user, profile }: DashboardNavProps) {
           {/* Logo */}
           <div className="flex items-center gap-3 px-6 py-5 border-b border-border">
             <Image 
-              src="/logos/ikenga-ai-logo-dark.png" 
-              alt="IKENGA AI" 
+              src="/logos/ujris-logo-dark.jpg" 
+              alt="UJRIS" 
               width={40} 
               height={40}
               className="rounded-lg"
             />
             <div>
-              <h1 className="text-lg font-bold text-gold">IKENGA</h1>
+              <h1 className="text-lg font-bold"><span className="text-gold">UJ</span>RIS</h1>
               <p className="text-xs text-muted-foreground">Justice Intelligence</p>
             </div>
           </div>
@@ -134,12 +134,12 @@ export function DashboardNav({ user, profile }: DashboardNavProps) {
               </div>
             </div>
 
-            {/* IKENGA Section */}
+            {/* Content Studio Section */}
             <div>
               <div className="flex items-center gap-2 px-3 mb-3">
                 <Zap className="w-4 h-4 text-gold" />
                 <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  IKENGA Content
+                  Content Studio
                 </span>
               </div>
               <div className="space-y-1">

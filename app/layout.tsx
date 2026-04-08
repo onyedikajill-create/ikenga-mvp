@@ -8,13 +8,13 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "IKENGA AI | Justice Intelligence Platform",
-  description: "UJRIS + IKENGA - The unified platform for self-represented litigants. Build your employment tribunal case, expose contradictions with AI forensics, and fight for workplace justice.",
-  keywords: ["employment tribunal", "unfair dismissal", "workplace justice", "ET1", "ET3", "ACAS", "self-represented litigant", "legal AI"],
-  authors: [{ name: "IKENGA AI" }],
+  title: "UJRIS | Universal Justice Response Intelligence System",
+  description: "Justice Shouldn't Require a Lawyer to Survive. AI-powered legal tools for self-represented litigants. Build your case, expose contradictions with forensic AI, and fight for justice.",
+  keywords: ["employment tribunal", "unfair dismissal", "workplace justice", "ET1", "ET3", "ACAS", "self-represented litigant", "legal AI", "UJRIS", "discrimination"],
+  authors: [{ name: "UJRIS" }],
   openGraph: {
-    title: "IKENGA AI | Power Your Destiny Across Every Platform",
-    description: "The unified intelligence platform for self-represented litigants. Build your case, expose contradictions, and fight for justice.",
+    title: "UJRIS | Justice Shouldn't Require a Lawyer to Survive",
+    description: "AI-powered legal tools for self-represented litigants. Build your case, expose contradictions, and fight for justice.",
     type: "website",
   },
 }
