@@ -44,6 +44,7 @@ const ikengaNavItems = [
 ]
 
 const bottomNavItems = [
+  { href: '/pricing', label: 'Pricing', icon: Crown },
   { href: '/settings', label: 'Settings', icon: Settings },
   { href: '/help', label: 'Help & Support', icon: HelpCircle },
 ]
@@ -161,7 +162,7 @@ export function DashboardNav({ user, profile }: DashboardNavProps) {
                   Unlock unlimited cases, AI forensics, and premium features.
                 </p>
                 <Link
-                  href="/settings/billing"
+                  href="/pricing"
                   className="block w-full py-2 px-3 text-center text-sm font-semibold rounded-lg bg-gold text-black hover:bg-gold-light transition-colors"
                 >
                   Upgrade from £9.99/mo

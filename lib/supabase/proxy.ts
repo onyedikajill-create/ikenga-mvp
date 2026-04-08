@@ -6,12 +6,19 @@ export async function updateSession(request: NextRequest) {
     request,
   })
 
-  // Skip Supabase auth if env vars are not configured
+  // Skip Supabase auth if env vars are not configured or invalid
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-  if (!supabaseUrl || !supabaseAnonKey) {
+  // Check if env vars are properly configured (not empty, undefined, or placeholder values)
+  const isValidUrl = supabaseUrl && 
+    supabaseUrl.trim() !== '' && 
+    (supabaseUrl.startsWith('http://') || supabaseUrl.startsWith('https://'))
+  const isValidKey = supabaseAnonKey && supabaseAnonKey.trim() !== ''
+
+  if (!isValidUrl || !isValidKey) {
     // Allow access to all routes in demo mode (no Supabase configured)
+    // Protected routes will show demo data instead of requiring auth
     return supabaseResponse
   }
 
