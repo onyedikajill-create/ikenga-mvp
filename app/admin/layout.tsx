@@ -13,12 +13,14 @@ import {
   Settings,
   LogOut,
   Activity,
-  Database
+  Database,
+  Receipt
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const adminNavItems = [
   { href: '/admin', label: 'Super Dashboard', icon: LayoutDashboard },
+  { href: '/admin/disputes', label: 'Disputes & Refunds', icon: Receipt },
   { href: '/admin/ai-learning', label: 'AI Learning', icon: Brain },
   { href: '/admin/alerts', label: 'Alerts', icon: Bell },
   { href: '/admin/users', label: 'Users', icon: Users },

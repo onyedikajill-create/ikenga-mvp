@@ -277,6 +277,72 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* The IKENGA Guarantee */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="rounded-2xl border-2 border-gold bg-gradient-to-br from-gold/10 to-transparent p-8 md:p-12">
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gold/20 mb-4">
+                <Shield className="w-8 h-8 text-gold" />
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
+                The IKENGA <span className="text-gold">Guarantee</span>
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                If our AI does not add clear value to your case, you get a FULL REFUND. No questions asked.
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
+              <div className="space-y-4">
+                <h3 className="font-semibold text-foreground">Our system tracks:</h3>
+                <ul className="space-y-2">
+                  {[
+                    { metric: 'Timeline completeness', target: '90%+' },
+                    { metric: 'Contradictions found', target: '5+' },
+                    { metric: 'Document quality', target: '85%+' },
+                    { metric: 'Overall value score', target: '80%+' },
+                  ].map((item) => (
+                    <li key={item.metric} className="flex items-center justify-between text-sm">
+                      <span className="flex items-center gap-2 text-muted-foreground">
+                        <Check className="w-4 h-4 text-gold" />
+                        {item.metric}
+                      </span>
+                      <span className="font-medium text-gold">{item.target}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="space-y-4">
+                <h3 className="font-semibold text-foreground">If ANY metric falls below threshold:</h3>
+                <div className="p-4 rounded-lg bg-green-500/10 border border-green-500/30">
+                  <p className="text-green-500 font-semibold mb-2">Refund processed AUTOMATICALLY</p>
+                  <p className="text-sm text-muted-foreground">
+                    Within 5 minutes. You do not need to ask. You do not need to argue. 
+                    The system decides based on verifiable metrics.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex flex-wrap justify-center gap-4 text-sm">
+              <span className="flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border">
+                <Check className="w-4 h-4 text-gold" />
+                100% transparent
+              </span>
+              <span className="flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border">
+                <Check className="w-4 h-4 text-gold" />
+                100% automated
+              </span>
+              <span className="flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border">
+                <Check className="w-4 h-4 text-gold" />
+                100% fair
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Pricing */}
       <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 bg-card/50">
         <div className="max-w-7xl mx-auto">

@@ -18,6 +18,7 @@ import {
   MoreHorizontal
 } from 'lucide-react'
 import type { Case, Evidence, TimelineEvent, Document as Doc } from '@/lib/types'
+import { CaseValueMetricsWrapper } from '@/components/case/case-value-metrics-wrapper'
 
 const caseTypeLabels: Record<string, string> = {
   unfair_dismissal: 'Unfair Dismissal',
@@ -276,6 +277,9 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ id:
 
         {/* Actions Sidebar */}
         <div className="space-y-4">
+          {/* Case Value Metrics - The IKENGA Guarantee */}
+          <CaseValueMetricsWrapper caseId={id} />
+
           <h2 className="text-lg font-semibold text-foreground">Case Actions</h2>
           <div className="space-y-2">
             {actions.map((action) => (
