@@ -108,15 +108,15 @@ export default function SignUpPage() {
         <div className="relative z-10">
           <Link href="/" className="flex items-center gap-3">
             <Image 
-              src="/logos/ikenga-ai-logo-dark.png" 
-              alt="IKENGA AI" 
+              src="/logos/ujris-logo-transparent.jpg" 
+              alt="UJRIS" 
               width={60} 
               height={60}
               className="rounded-lg"
             />
             <div>
-              <h1 className="text-2xl font-bold text-gold">IKENGA</h1>
-              <p className="text-[10px] text-muted-foreground leading-tight">United Justice Response<br/>Intelligence System</p>
+              <h1 className="text-2xl font-bold"><span className="text-gold">UJ</span><span className="text-white">RIS</span></h1>
+              <p className="text-[10px] text-muted-foreground leading-tight">Universal Justice Response<br/>Intelligence System</p>
             </div>
           </Link>
         </div>
@@ -158,7 +158,7 @@ export default function SignUpPage() {
         
         {/* Footer */}
         <div className="relative z-10 text-sm text-muted-foreground">
-          <p>&copy; 2026 IKENGA AI. All rights reserved.</p>
+          <p>&copy; 2026 UJRIS. All rights reserved.</p>
         </div>
       </div>
 
@@ -169,13 +169,13 @@ export default function SignUpPage() {
           <div className="lg:hidden flex justify-center mb-8">
             <Link href="/" className="flex items-center gap-3">
               <Image 
-                src="/logos/ikenga-ai-logo-dark.png" 
-                alt="IKENGA AI" 
+                src="/logos/ujris-logo-transparent.jpg" 
+                alt="UJRIS" 
                 width={50} 
                 height={50}
                 className="rounded-lg"
               />
-              <span className="text-2xl font-bold text-gold">IKENGA</span>
+              <span className="text-2xl font-bold"><span className="text-gold">UJ</span><span className="text-white">RIS</span></span>
             </Link>
           </div>
           

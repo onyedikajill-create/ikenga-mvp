@@ -1,362 +1,408 @@
-import Link from 'next/link'
+'use client'
+
 import Image from 'next/image'
+import Link from 'next/link'
+import { useState } from 'react'
 import { 
-  Scale, 
+  ArrowRight, 
+  Check, 
   Shield, 
-  Sparkles, 
-  FileBox, 
-  Clock, 
-  Search,
+  Scale,
   FileText,
-  Calculator,
+  Clock,
+  Search,
+  Mail,
+  Calendar,
+  MousePointer,
+  Wrench,
+  FileOutput,
+  MessageSquareQuote,
+  HelpCircle,
   Zap,
-  Check,
-  ArrowRight,
-  Star,
-  Users,
-  TrendingUp,
-  Lock,
-  Award,
-  Target,
-  BadgeCheck
+  Heart,
+  Car,
+  Briefcase,
+  Eye,
+  FileBox,
+  ShieldCheck,
+  Brain,
+  Video,
+  Timer
 } from 'lucide-react'
 
-const features = [
-  {
-    icon: FileBox,
-    title: 'Evidence Vault',
-    description: 'Upload contracts, emails, and messages. AI automatically categorizes everything and builds your evidence index.',
-    free: true
-  },
-  {
-    icon: Clock,
-    title: 'Timeline Builder',
-    description: 'Create a bulletproof chronology with automatic gap detection. See where your employer\'s story falls apart.',
-    free: true
-  },
-  {
-    icon: Search,
-    title: 'Forensic Contradiction Finder',
-    description: 'Upload their ET3. Watch AI expose every lie, inconsistency, and weak argument in minutes.',
-    free: false
-  },
-  {
-    icon: FileText,
-    title: 'Document Generator',
-    description: 'Generate grievance letters, SAR requests, ET1 forms, and witness statements. Export to Word/PDF.',
-    free: false
-  },
-  {
-    icon: Calculator,
-    title: 'Compensation Calculator',
-    description: 'Calculate your potential award using 2025/26 Vento bands, statutory caps, and ACAS uplift.',
-    free: true
-  },
-  {
-    icon: Target,
-    title: 'Hearing Prep Pack',
-    description: 'Get cross-examination questions, judge-ready bundles, and strategic arguments for your hearing.',
-    free: false
-  },
-]
-
-const testimonials = [
-  {
-    quote: "I was drowning in 3 years of emails. IKENGA organized everything into a timeline that won my case. The judge cited my chronology directly.",
-    author: "Sarah M.",
-    role: "Former HR Manager, Manchester",
-    result: "Won £47,000",
-    verified: true
-  },
-  {
-    quote: "Their ET3 was full of lies. IKENGA found 14 contradictions I would have missed. My employer settled before the hearing.",
-    author: "James T.",
-    role: "Software Developer, London",
-    result: "Settled £38,500",
-    verified: true
-  },
-  {
-    quote: "No lawyer would take my case on contingency. IKENGA gave me the confidence and tools to represent myself. I won.",
-    author: "Michelle K.",
-    role: "Sales Manager, Birmingham",
-    result: "Won £29,200",
-    verified: true
-  },
-]
-
-const stats = [
-  { value: '1,847', label: 'Workers Building Cases', highlight: true },
-  { value: '£4.2M', label: 'Compensation Won' },
-  { value: '89%', label: 'Success Rate' },
-  { value: '14', label: 'Avg. Contradictions Found' },
-]
-
-const freeFeatures = [
-  '1 active employment tribunal case',
-  'Evidence vault (100MB)',
-  'Timeline builder with gap detection',
-  'Basic compensation calculator',
-  'ET1 form auto-fill assistant',
-]
-
-const proFeatures = [
-  'Unlimited active cases',
-  '10GB evidence storage',
-  'Forensic AI contradiction finder',
-  'Full document generator (Word/PDF export)',
-  'Hearing prep pack with cross-examination questions',
-  'Priority support',
-]
-
 export default function LandingPage() {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const handleJoinWaitlist = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    setLoading(false)
+    alert('Welcome to the Justice Movement!')
+    setName('')
+    setEmail('')
+  }
+
   return (
-    <main className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#1a1f2e] text-white">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <header className="sticky top-0 z-50 bg-[#1a1f2e]/95 backdrop-blur-md border-b border-white/10">
+        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link href="/" className="flex items-center gap-3">
               <Image 
-                src="/logos/ikenga-ai-logo-dark.png" 
-                alt="IKENGA AI" 
+                src="/logos/ujris-logo-dark.jpg" 
+                alt="UJRIS" 
                 width={44} 
                 height={44}
                 className="rounded-lg"
               />
-              <div className="flex flex-col">
-                <span className="text-xl font-bold text-gold">IKENGA</span>
-                <span className="text-[9px] text-muted-foreground -mt-1 leading-tight">United Justice Response<br/>Intelligence System</span>
-              </div>
+              <span className="text-xl font-bold">
+                <span className="text-[#d4a853]">UJ</span>
+                <span className="text-white">RIS</span>
+              </span>
             </Link>
+            
             <div className="hidden md:flex items-center gap-8">
-              <Link href="#features" className="text-muted-foreground hover:text-foreground transition-colors">Features</Link>
-              <Link href="#pricing" className="text-muted-foreground hover:text-foreground transition-colors">Pricing</Link>
-              <Link href="#testimonials" className="text-muted-foreground hover:text-foreground transition-colors">Success Stories</Link>
+              <Link href="#features" className="text-sm text-gray-300 hover:text-white transition-colors">Features</Link>
+              <Link href="#how-it-works" className="text-sm text-gray-300 hover:text-white transition-colors">How It Works</Link>
+              <Link href="#pricing" className="text-sm text-gray-300 hover:text-white transition-colors">Pricing</Link>
+              <Link href="#resources" className="text-sm text-gray-300 hover:text-white transition-colors">Resources</Link>
             </div>
-            <div className="flex items-center gap-4">
-              <Link href="/auth/login" className="text-muted-foreground hover:text-foreground transition-colors">
-                Sign In
-              </Link>
-              <Link 
-                href="/auth/sign-up" 
-                className="px-4 py-2 rounded-lg bg-gold text-black font-semibold hover:bg-gold-light transition-all"
-              >
-                Start Free
-              </Link>
-            </div>
+            
+            <Link
+              href="/auth/sign-up"
+              className="px-5 py-2.5 rounded-lg bg-[#d4a853] text-[#1a1f2e] font-semibold text-sm hover:bg-[#e5b964] transition-all"
+            >
+              Start Free Assessment
+            </Link>
           </div>
-        </div>
-      </nav>
+        </nav>
+      </header>
 
-      {/* Hero Section - HIGH CONVERTING */}
-      <section className="pt-28 pb-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        {/* Background gradient effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-gold/5 via-transparent to-transparent pointer-events-none" />
-        
-        <div className="max-w-7xl mx-auto relative">
-          <div className="text-center max-w-4xl mx-auto">
-            {/* Urgency Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500/10 border border-red-500/30 mb-6 animate-pulse">
-              <span className="w-2 h-2 rounded-full bg-red-500" />
-              <span className="text-sm font-medium text-red-400">1,847 workers already building stronger cases</span>
-            </div>
-            
-            {/* KILLER HEADLINE */}
-            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-foreground leading-tight mb-6">
-              Beat Your Boss.<br />
-              Win Your Tribunal.<br />
-              <span className="text-gold">AI Does the Heavy Lifting.</span>
-            </h1>
-            
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Upload your evidence. Build your timeline. Expose their contradictions.
-              <strong className="text-foreground"> Free tier = 1 active case. No credit card required.</strong>
-            </p>
-            
-            {/* PRIMARY CTA */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
-              <Link
-                href="/auth/sign-up"
-                className="w-full sm:w-auto px-10 py-5 rounded-xl bg-gold text-black font-bold text-xl hover:bg-gold-light transition-all gold-glow flex items-center justify-center gap-3 group"
-              >
-                Start Building Your Case FREE
-                <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
-            
-            {/* Trust Bar */}
-            <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
-              <span className="flex items-center gap-2">
-                <Lock className="w-4 h-4 text-gold" />
-                UK GDPR compliant
-              </span>
-              <span className="text-border">|</span>
-              <span className="flex items-center gap-2">
-                <Shield className="w-4 h-4 text-gold" />
-                Bank-grade encryption
-              </span>
-              <span className="text-border">|</span>
-              <span className="flex items-center gap-2">
-                <Award className="w-4 h-4 text-gold" />
-                Used by workers who won £47k+ last month
-              </span>
-            </div>
+      {/* Hero Section */}
+      <section className="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <div className="max-w-5xl mx-auto text-center">
+          {/* Tags */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-8">
+            <span className="text-[#d4a853] text-sm font-medium">AI-Powered</span>
+            <span className="text-gray-500">·</span>
+            <span className="text-gray-300 text-sm">UK Law</span>
+            <span className="text-gray-500">·</span>
+            <span className="text-gray-300 text-sm">Free to Start</span>
           </div>
+          
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif text-white mb-6 leading-tight">
+            {"Justice Shouldn't Require a"}<br/>
+            <span className="text-[#d4a853] italic">Lawyer</span> to Survive
+          </h1>
+          
+          <p className="text-xl sm:text-2xl text-[#d4a853] mb-4 font-medium">
+            Turn evidence into action. Turn discrimination into justice.
+          </p>
+          
+          <p className="text-gray-400 text-lg mb-10 max-w-3xl mx-auto">
+            Intelligence-driven legal power for self-represented litigants. Built for BAME communities — designed for everyone facing injustice.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+            <Link
+              href="/auth/sign-up"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-transparent border-2 border-white text-white font-semibold hover:bg-white hover:text-[#1a1f2e] transition-all"
+            >
+              Start Your Case
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+            <Link
+              href="#tools"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-[#d4a853] text-[#1a1f2e] font-semibold hover:bg-[#e5b964] transition-all"
+            >
+              See All Tools
+            </Link>
+            <Link
+              href="#how-it-works"
+              className="text-gray-400 hover:text-white transition-colors font-medium"
+            >
+              How It Works
+            </Link>
+          </div>
+          
+          <p className="text-sm text-gray-500 mb-12">
+            Free to start — no card needed · Your data stays on your device · Built by a discrimination survivor
+          </p>
           
           {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 pt-8 border-t border-border max-w-4xl mx-auto">
-            {stats.map((stat) => (
-              <div key={stat.label} className="text-center">
-                <p className={`text-3xl sm:text-4xl font-bold ${stat.highlight ? 'text-gold' : 'text-foreground'}`}>
-                  {stat.value}
-                </p>
-                <p className="text-sm text-muted-foreground">{stat.label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Social Proof Bar */}
-      <section className="py-8 px-4 border-y border-border bg-card/50">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-center gap-8 flex-wrap">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Scale className="w-5 h-5 text-gold" />
-              <span className="font-medium">Employment Tribunals</span>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+            <div className="text-center p-4">
+              <div className="text-3xl font-bold text-white mb-1">3 months - 1 day</div>
+              <div className="text-sm text-gray-400">ET Claim Window</div>
             </div>
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Shield className="w-5 h-5 text-gold" />
-              <span className="font-medium">ACAS Early Conciliation</span>
+            <div className="text-center p-4">
+              <div className="text-3xl font-bold text-white mb-1">68%</div>
+              <div className="text-sm text-gray-400">ACAS cases settle before tribunal</div>
             </div>
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <FileText className="w-5 h-5 text-gold" />
-              <span className="font-medium">ET1 & ET3 Analysis</span>
+            <div className="text-center p-4">
+              <div className="text-3xl font-bold text-white mb-1">£56,000</div>
+              <div className="text-sm text-gray-400">Vento upper band</div>
             </div>
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Search className="w-5 h-5 text-gold" />
-              <span className="font-medium">Forensic Contradiction Finder</span>
+            <div className="text-center p-4">
+              <div className="text-3xl font-bold text-white mb-1">94%</div>
+              <div className="text-sm text-gray-400">BAME claimants self-represented</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-              Everything You Need to <span className="text-gold">Destroy Their Case</span>
+      {/* We Understand Your Struggle */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-serif text-[#1a1f2e] mb-4">
+              We Understand Your <span className="text-[#d4a853]">Struggle</span>
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              The same tools £500/hour lawyers use. Now in your hands.
+            <p className="text-gray-600 text-lg">
+              Every problem you face has a solution in UJRIS
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((feature) => (
-              <div 
-                key={feature.title} 
-                className="p-6 rounded-xl bg-card border border-border card-hover relative"
-              >
-                {feature.free && (
-                  <span className="absolute top-4 right-4 px-2 py-1 text-xs font-semibold rounded-full bg-green-500/10 text-green-500 border border-green-500/30">
-                    FREE
-                  </span>
-                )}
-                {!feature.free && (
-                  <span className="absolute top-4 right-4 px-2 py-1 text-xs font-semibold rounded-full bg-gold/10 text-gold border border-gold/30">
-                    PRO
-                  </span>
-                )}
-                <div className="p-3 rounded-lg bg-gold/10 w-fit mb-4">
-                  <feature.icon className="w-6 h-6 text-gold" />
-                </div>
-                <h3 className="text-xl font-semibold text-foreground mb-2">{feature.title}</h3>
-                <p className="text-muted-foreground">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-card/50">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-              Build Your Case in <span className="text-gold">60 Seconds</span>
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              No legal knowledge required. The AI guides you through everything.
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-6">
             {[
-              { 
-                step: '1', 
-                title: 'Upload Everything', 
-                description: 'Contracts, emails, WhatsApp messages, letters. We organize and categorize it all automatically.' 
-              },
-              { 
-                step: '2', 
-                title: 'Build Your Timeline', 
-                description: 'See your case as a clear story. AI detects gaps, inconsistencies, and where they\'re lying.' 
-              },
-              { 
-                step: '3', 
-                title: 'Generate Your Documents', 
-                description: 'Grievance letters, ET1 forms, witness statements. Professional, powerful, ready to submit.' 
-              },
-            ].map((item) => (
-              <div key={item.step} className="text-center">
-                <div className="w-14 h-14 rounded-full bg-gold text-black font-bold text-2xl flex items-center justify-center mx-auto mb-4">
-                  {item.step}
+              { icon: HelpCircle, problem: '"I don\'t know where to start"', solution: 'Guided 4-step assessment gives you clarity in 10 minutes' },
+              { icon: Zap, problem: '"They\'re denying everything"', solution: 'Forensic Analyser exposes contradictions line by line' },
+              { icon: Scale, problem: '"Solicitors cost £250/hour"', solution: 'What costs £500 takes £29 here' },
+              { icon: Clock, problem: '"I don\'t know my deadlines"', solution: 'Live countdown to tribunal filing deadlines' },
+              { icon: Shield, problem: '"The system is designed to crush me"', solution: 'Anchor Lie Detection exposes foundational falsehoods' },
+              { icon: Heart, problem: '"I\'m facing abuse AND discrimination"', solution: 'Covers domestic abuse, IOPC complaints, ICO breaches' },
+            ].map((item, index) => (
+              <div key={index} className="p-6 rounded-xl bg-[#1a1f2e] border border-[#2a3142]">
+                <div className="w-12 h-12 rounded-full bg-[#d4a853]/20 flex items-center justify-center mb-4">
+                  <item.icon className="w-6 h-6 text-[#d4a853]" />
                 </div>
-                <h3 className="text-xl font-semibold text-foreground mb-2">{item.title}</h3>
-                <p className="text-muted-foreground">{item.description}</p>
+                <h3 className="text-lg font-semibold text-white mb-2 italic">{item.problem}</h3>
+                <div className="w-12 h-0.5 bg-[#d4a853] mb-3"></div>
+                <p className="text-gray-400 text-sm">{item.solution}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Justice in 3 Clicks */}
+      <section id="how-it-works" className="py-20 px-4 sm:px-6 lg:px-8 bg-[#1a1f2e]">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-4">
+            <span className="inline-block px-4 py-1 rounded-full bg-[#d4a853]/20 text-[#d4a853] text-sm font-medium mb-4">
+              The 3-Click Rule
+            </span>
+          </div>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-serif text-white mb-4">
+              Justice in <span className="text-[#d4a853]">3 Clicks</span>
+            </h2>
+            <p className="text-gray-400 text-lg">
+              No complexity. No confusion. Just results.
+            </p>
+          </div>
+          
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0">
+            {[
+              { icon: MousePointer, step: '1', title: 'Open UJRIS', desc: 'Select or create your case' },
+              { icon: Wrench, step: '2', title: 'Choose Your Tool', desc: 'Assessment, Forensic, SAR, or Timeline' },
+              { icon: FileOutput, step: '3', title: 'Generate Report', desc: 'Court-ready PDF in seconds' },
+            ].map((item, index) => (
+              <div key={index} className="flex items-center">
+                <div className="text-center">
+                  <div className="w-24 h-24 rounded-full bg-[#2a3142] border-2 border-[#3a4152] flex flex-col items-center justify-center mx-auto mb-4">
+                    <item.icon className="w-8 h-8 text-[#d4a853] mb-1" />
+                    <span className="text-2xl font-bold text-white">{item.step}</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-1">{item.title}</h3>
+                  <p className="text-gray-400 text-sm">{item.desc}</p>
+                </div>
+                {index < 2 && (
+                  <div className="hidden md:block w-24 h-0.5 border-t-2 border-dashed border-[#3a4152] mx-2"></div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Your Complete Legal Arsenal */}
+      <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-serif text-[#1a1f2e] mb-4">
+              Your Complete <span className="text-[#d4a853]">Legal Arsenal</span>
+            </h2>
+            <p className="text-gray-600 text-lg">
+              Every tool you need to build, analyze, and win your case
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              { icon: Search, title: 'Anchor Lie Detection', desc: '15 forensic detectors that expose contradictions and foundational falsehoods', highlight: true },
+              { icon: FileText, title: 'Truth-Layer Reports', desc: 'Court-ready PDF documents that present your evidence professionally' },
+              { icon: Calendar, title: 'Evidence Timeline', desc: 'Drag-and-drop timeline builder to organize your case chronologically' },
+              { icon: Mail, title: 'SAR Intelligence', desc: 'Auto-generate Subject Access Requests to gather evidence legally' },
+              { icon: ShieldCheck, title: 'Sovereign Shield', desc: 'Specialized pathways for domestic abuse and coercive control cases' },
+              { icon: Brain, title: 'Case Intelligence', desc: 'AI-powered strength scoring to assess your chances of success' },
+              { icon: FileBox, title: 'AI Document Drafting', desc: 'Generate grievance letters, ET1 guidance, and legal correspondence' },
+              { icon: Video, title: 'CCTV Analyser', desc: 'Challenge video evidence and identify inconsistencies' },
+              { icon: Timer, title: 'Deadlines Centre', desc: 'Live countdown timers so you never miss a filing deadline' },
+            ].map((item, index) => (
+              <div 
+                key={index} 
+                className={`p-6 rounded-xl border ${item.highlight ? 'bg-[#1a1f2e] border-[#d4a853]' : 'bg-[#1a1f2e] border-[#2a3142]'}`}
+              >
+                <div className={`w-12 h-12 rounded-lg ${item.highlight ? 'bg-[#d4a853]/20' : 'bg-[#2a3142]'} flex items-center justify-center mb-4`}>
+                  <item.icon className={`w-6 h-6 ${item.highlight ? 'text-[#d4a853]' : 'text-[#4a9eff]'}`} />
+                </div>
+                <h3 className="text-lg font-semibold text-white mb-2">{item.title}</h3>
+                <p className="text-gray-400 text-sm">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* What Are You Fighting? */}
+      <section id="tools" className="py-20 px-4 sm:px-6 lg:px-8 bg-[#1a1f2e]">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-serif text-white mb-4">
+              What Are You <span className="text-[#d4a853]">Fighting?</span>
+            </h2>
+            <p className="text-gray-400 text-lg">
+              Select your case type to get started
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-4 gap-6">
+            {[
+              { icon: FileText, category: 'DWP', title: 'PIP Appeal', desc: 'Challenge Personal Independence Payment decisions with evidence-based arguments' },
+              { icon: Car, category: 'COUNCIL', title: 'Parking Ticket / PCN', desc: 'Fight unfair Penalty Charge Notices with procedural and substantive defenses' },
+              { icon: Shield, category: 'INSURERS', title: 'Insurance Claim Denial', desc: 'Challenge rejected claims and bad faith insurance practices' },
+              { icon: Briefcase, category: 'EMPLOYER', title: 'Employment Dispute', desc: 'Discrimination, unfair dismissal, harassment, and whistleblowing cases' },
+            ].map((item, index) => (
+              <div key={index} className="p-6 rounded-xl bg-[#2a3142] border border-[#3a4152] hover:border-[#d4a853] transition-colors group">
+                <div className="w-12 h-12 rounded-lg bg-[#d4a853]/20 flex items-center justify-center mb-4">
+                  <item.icon className="w-6 h-6 text-[#d4a853]" />
+                </div>
+                <span className="text-xs font-semibold text-[#d4a853] tracking-wider">{item.category}</span>
+                <h3 className="text-lg font-semibold text-white mt-1 mb-2">{item.title}</h3>
+                <p className="text-gray-400 text-sm mb-4">{item.desc}</p>
+                <Link 
+                  href="/auth/sign-up" 
+                  className="inline-flex items-center text-[#d4a853] font-medium text-sm group-hover:gap-2 transition-all"
+                >
+                  Start Case <ArrowRight className="w-4 h-4 ml-1" />
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-serif text-[#1a1f2e] mb-4">
+              Simple, <span className="text-[#d4a853]">Transparent Pricing</span>
+            </h2>
+            <p className="text-gray-600 text-lg">
+              One payment. Your case analyzed. No hidden fees.
+            </p>
+          </div>
+          
+          <div className="rounded-2xl border-2 border-[#d4a853] bg-white p-8 relative">
+            <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+              <span className="px-4 py-1 rounded-full bg-[#d4a853] text-[#1a1f2e] text-sm font-semibold">
+                Most Popular
+              </span>
+            </div>
+            
+            <div className="text-center mb-8">
+              <div className="text-6xl font-bold text-[#1a1f2e] mb-2">£49</div>
+              <p className="text-gray-500">one-time payment</p>
+            </div>
+            
+            <ul className="space-y-4 mb-8">
+              {[
+                'Unlimited document uploads (any size)',
+                'AI legal summary',
+                'Timeline generation',
+                'Ready-to-send appeal letter',
+                'Password-protected PDF',
+                '7-day refund if not useful',
+              ].map((feature, index) => (
+                <li key={index} className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <span className="text-gray-700">{feature}</span>
+                </li>
+              ))}
+            </ul>
+            
+            <Link
+              href="/auth/sign-up"
+              className="block w-full py-4 rounded-lg bg-[#d4a853] text-[#1a1f2e] font-semibold text-center hover:bg-[#e5b964] transition-all"
+            >
+              Start Your Case — £49 <ArrowRight className="inline w-5 h-5 ml-1" />
+            </Link>
+            
+            <p className="text-center text-sm text-gray-500 mt-4">
+              90-minute delivery · Secure payment · 7-day refund
+            </p>
           </div>
         </div>
       </section>
 
       {/* Testimonials */}
-      <section id="testimonials" className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-              Real Workers. <span className="text-gold">Real Wins.</span>
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-[#1a1f2e]">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-serif text-white mb-4">
+              Real People. Real <span className="text-[#d4a853]">Justice.</span>
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Join thousands fighting back against unfair employers
+            <p className="text-gray-400 text-lg">
+              Join thousands fighting back with UJRIS
             </p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map((testimonial, i) => (
-              <div key={i} className="p-6 rounded-xl bg-card border border-border">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="flex gap-1">
-                    {[...Array(5)].map((_, j) => (
-                      <Star key={j} className="w-4 h-4 fill-gold text-gold" />
-                    ))}
-                  </div>
-                  {testimonial.verified && (
-                    <span className="flex items-center gap-1 text-xs text-green-500">
-                      <BadgeCheck className="w-4 h-4" />
-                      Verified
-                    </span>
-                  )}
-                </div>
-                <p className="text-foreground mb-4">&ldquo;{testimonial.quote}&rdquo;</p>
-                <div className="flex items-center justify-between pt-4 border-t border-border">
-                  <div>
-                    <p className="font-semibold text-foreground">{testimonial.author}</p>
-                    <p className="text-sm text-muted-foreground">{testimonial.role}</p>
-                  </div>
-                  <span className="text-lg font-bold text-gold">{testimonial.result}</span>
+            {[
+              {
+                quote: "UJRIS helped me identify contradictions in my employer's response that I would never have spotted. The Anchor Lie Detection feature was a game-changer for my race discrimination case.",
+                name: 'M.O.',
+                role: 'Employment Tribunal Claimant',
+                tag: 'Race Discrimination'
+              },
+              {
+                quote: "As someone with a disability fighting PIP denials, I felt powerless. UJRIS gave me the tools to organize my evidence and present my case clearly. I won my appeal.",
+                name: 'A.K.',
+                role: 'Self-Represented Litigant',
+                tag: 'Disability Discrimination'
+              },
+              {
+                quote: "I recommend UJRIS to everyone who comes to us feeling overwhelmed. It does what we wish we could do for every client - gives them real, actionable guidance.",
+                name: 'C.A.',
+                role: 'Citizens Advice Volunteer',
+                tag: 'Advisory Role'
+              },
+            ].map((testimonial, index) => (
+              <div key={index} className="p-6 rounded-xl bg-[#2a3142] border border-[#3a4152]">
+                <MessageSquareQuote className="w-10 h-10 text-[#d4a853] mb-4" />
+                <p className="text-gray-300 italic mb-6">&quot;{testimonial.quote}&quot;</p>
+                <div>
+                  <div className="font-semibold text-white">{testimonial.name}</div>
+                  <div className="text-sm text-gray-400">{testimonial.role}</div>
+                  <span className="inline-block mt-2 px-3 py-1 rounded-full bg-[#d4a853]/20 text-[#d4a853] text-xs">
+                    {testimonial.tag}
+                  </span>
                 </div>
               </div>
             ))}
@@ -364,204 +410,133 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* The IKENGA Guarantee */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-card/50">
-        <div className="max-w-4xl mx-auto">
-          <div className="rounded-2xl border-2 border-gold bg-gradient-to-br from-gold/10 to-transparent p-8 md:p-12">
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gold/20 mb-4">
-                <Shield className="w-8 h-8 text-gold" />
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
-                The IKENGA <span className="text-gold">Guarantee</span>
-              </h2>
-              <p className="text-lg text-muted-foreground">
-                If our AI does not add clear value to your case, you get a <strong className="text-foreground">FULL REFUND</strong>. No questions asked.
-              </p>
-            </div>
-            
-            <div className="grid md:grid-cols-2 gap-6 mb-8">
-              <div className="space-y-4">
-                <h3 className="font-semibold text-foreground">Our system tracks:</h3>
-                <ul className="space-y-2">
-                  {[
-                    { metric: 'Timeline completeness', target: '90%+' },
-                    { metric: 'Contradictions found', target: '5+' },
-                    { metric: 'Document quality', target: '85%+' },
-                    { metric: 'Overall value score', target: '80%+' },
-                  ].map((item) => (
-                    <li key={item.metric} className="flex items-center justify-between text-sm">
-                      <span className="flex items-center gap-2 text-muted-foreground">
-                        <Check className="w-4 h-4 text-gold" />
-                        {item.metric}
-                      </span>
-                      <span className="font-medium text-gold">{item.target}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="space-y-4">
-                <h3 className="font-semibold text-foreground">If ANY metric falls below:</h3>
-                <div className="p-4 rounded-lg bg-green-500/10 border border-green-500/30">
-                  <p className="text-green-500 font-semibold mb-2">Automatic refund in 5 minutes</p>
-                  <p className="text-sm text-muted-foreground">
-                    No arguing. No support tickets. The system decides based on verifiable metrics. 100% fair.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing - UPDATED WITH UJU CYCLE SYNTHESIS */}
-      <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-              Start Free. <span className="text-gold">Upgrade When You Win.</span>
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              No credit card for free tier. Cancel Pro anytime.
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {/* Free Tier - VIRAL ACQUISITION ENGINE */}
-            <div className="p-6 rounded-xl bg-card border border-border">
-              <h3 className="text-xl font-semibold text-foreground mb-2">Free</h3>
-              <p className="text-muted-foreground mb-4">Everything to start your case</p>
-              <p className="text-4xl font-bold text-foreground mb-2">£0</p>
-              <p className="text-sm text-muted-foreground mb-6">Forever free, 1 case</p>
-              <ul className="space-y-3 mb-6">
-                {freeFeatures.map((item) => (
-                  <li key={item} className="flex items-start gap-2 text-muted-foreground">
-                    <Check className="w-5 h-5 text-green-500 mt-0.5 shrink-0" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link href="/auth/sign-up" className="block w-full py-3 text-center rounded-lg bg-secondary text-foreground font-semibold hover:bg-muted transition-all">
-                Start Free Now
-              </Link>
-            </div>
-            
-            {/* Pro One-Time - MAIN REVENUE DRIVER */}
-            <div className="p-6 rounded-xl bg-card border-2 border-gold relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-gold text-black text-sm font-bold">
-                BEST VALUE
-              </div>
-              <h3 className="text-xl font-semibold text-foreground mb-2">Pro</h3>
-              <p className="text-muted-foreground mb-4">Full power, unlimited cases</p>
-              <div className="flex items-baseline gap-2 mb-2">
-                <p className="text-4xl font-bold text-foreground">£49</p>
-                <span className="text-lg text-muted-foreground">one-time</span>
-              </div>
-              <p className="text-sm text-gold mb-6">+ optional £19/mo for premium support</p>
-              <ul className="space-y-3 mb-6">
-                {proFeatures.map((item) => (
-                  <li key={item} className="flex items-start gap-2 text-muted-foreground">
-                    <Check className="w-5 h-5 text-gold mt-0.5 shrink-0" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link href="/auth/sign-up?plan=pro" className="block w-full py-3 text-center rounded-lg bg-gold text-black font-bold hover:bg-gold-light transition-all gold-glow-sm">
-                Get Pro Access
-              </Link>
-            </div>
-            
-            {/* Lifetime - HIGH TICKET */}
-            <div className="p-6 rounded-xl bg-card border border-border">
-              <h3 className="text-xl font-semibold text-foreground mb-2">Lifetime</h3>
-              <p className="text-muted-foreground mb-4">Never pay again</p>
-              <p className="text-4xl font-bold text-foreground mb-2">£99</p>
-              <p className="text-sm text-muted-foreground mb-6">One-time, forever access</p>
-              <ul className="space-y-3 mb-6">
-                {['Everything in Pro', 'Lifetime updates', 'Priority support forever', 'Early access to new features'].map((item) => (
-                  <li key={item} className="flex items-start gap-2 text-muted-foreground">
-                    <Check className="w-5 h-5 text-gold mt-0.5 shrink-0" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link href="/auth/sign-up?plan=lifetime" className="block w-full py-3 text-center rounded-lg bg-secondary text-foreground font-semibold hover:bg-muted transition-all">
-                Get Lifetime Access
-              </Link>
-            </div>
-          </div>
-          
-          {/* Trust badges under pricing */}
-          <div className="flex flex-wrap justify-center gap-6 mt-12 text-sm text-muted-foreground">
-            <span className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-gold" />
-              30-day money-back guarantee
-            </span>
-            <span className="flex items-center gap-2">
-              <Lock className="w-4 h-4 text-gold" />
-              Secure payment via Stripe
-            </span>
-            <span className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-gold" />
-              1,847+ active users
-            </span>
-          </div>
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-t from-gold/5 to-transparent">
+      {/* Founder Quote */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-5xl font-bold text-foreground mb-4">
-            Your Boss Has Lawyers.<br />
-            <span className="text-gold">Now You Have AI.</span>
+          <div className="w-16 h-0.5 bg-[#d4a853] mx-auto mb-8"></div>
+          <blockquote className="text-2xl sm:text-3xl font-serif text-[#1a1f2e] mb-8 leading-relaxed">
+            &quot;My resolve for justice is not a lifestyle choice. It is an inheritance. From a people who would rather walk into the sea than live as slaves.&quot;
+          </blockquote>
+          <p className="text-gray-500">
+            — <span className="text-[#d4a853] font-semibold">ONYEDIKA MICHAEL OJIAKU</span>, FOUNDER
+          </p>
+          
+          <div className="flex flex-wrap justify-center gap-3 mt-8">
+            {['Freedom is sacred', 'Justice is ancestral', 'Truth is spiritual', 'No one stands alone'].map((value, index) => (
+              <span key={index} className="px-4 py-2 rounded-full bg-[#1a1f2e] text-white text-sm">
+                {value}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Join CTA */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-[#1a1f2e]">
+        <div className="max-w-2xl mx-auto text-center">
+          <h2 className="text-3xl sm:text-4xl font-serif text-white mb-4">
+            Join the <span className="text-[#d4a853]">Justice Movement</span>
           </h2>
-          <p className="text-xl text-muted-foreground mb-8">
-            Join 1,847 workers building stronger cases. Start free in 60 seconds.
-          </p>
-          <Link
-            href="/auth/sign-up"
-            className="inline-flex items-center gap-3 px-10 py-5 rounded-xl bg-gold text-black font-bold text-xl hover:bg-gold-light transition-all gold-glow group"
-          >
-            Start Building Your Case FREE
-            <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-          </Link>
-          <p className="text-sm text-muted-foreground mt-4">
-            No credit card required. 1 active case free forever.
-          </p>
+          <p className="text-gray-400 mb-2">Get instant access to UJRIS — free forever</p>
+          <p className="text-[#d4a853] font-medium mb-8">1,249 people have joined</p>
+          
+          <form onSubmit={handleJoinWaitlist} className="flex flex-col sm:flex-row gap-4 mb-4">
+            <input
+              type="text"
+              placeholder="Your name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="flex-1 px-4 py-3 rounded-lg bg-[#2a3142] border border-[#3a4152] text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#d4a853]"
+              required
+            />
+            <input
+              type="email"
+              placeholder="Your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="flex-1 px-4 py-3 rounded-lg bg-[#2a3142] border border-[#3a4152] text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#d4a853]"
+              required
+            />
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-6 py-3 rounded-lg bg-[#d4a853] text-[#1a1f2e] font-semibold hover:bg-[#e5b964] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {loading ? 'Joining...' : 'Get Free Access'}
+              <ArrowRight className="w-5 h-5" />
+            </button>
+          </form>
+          <p className="text-sm text-gray-500">No spam. No selling your data. Unsubscribe anytime.</p>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-4 sm:px-6 lg:px-8 border-t border-border">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-3">
-              <Image 
-                src="/logos/ikenga-ai-logo-dark.png" 
-                alt="IKENGA AI" 
-                width={36} 
-                height={36}
-                className="rounded-lg"
-              />
-              <span className="text-lg font-bold text-gold">IKENGA</span>
-              <span className="text-sm text-muted-foreground">United Justice Response Intelligence System</span>
+      <footer className="py-16 px-4 sm:px-6 lg:px-8 bg-[#141821] border-t border-white/10">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-4 gap-8 mb-12">
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <Image 
+                  src="/logos/ujris-logo-dark.jpg" 
+                  alt="UJRIS" 
+                  width={36} 
+                  height={36}
+                  className="rounded-lg"
+                />
+                <span className="text-lg font-bold">
+                  <span className="text-[#d4a853]">UJ</span>
+                  <span className="text-white">RIS</span>
+                </span>
+              </div>
+              <p className="text-gray-400 text-sm mb-4">
+                {"Justice Shouldn't Require a Lawyer to Survive. AI-powered legal tools for self-represented litigants."}
+              </p>
+              <Link href="#" className="text-[#d4a853] text-sm font-medium">Justice Intelligence</Link>
             </div>
-            <div className="flex items-center gap-6 text-sm text-muted-foreground">
-              <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
-              <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
-              <Link href="/contact" className="hover:text-foreground transition-colors">Contact</Link>
+            
+            <div>
+              <h4 className="font-semibold text-white mb-4">Platform</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><Link href="#" className="hover:text-white transition-colors">Assessment Tool</Link></li>
+                <li><Link href="#" className="hover:text-white transition-colors">Forensic Analyser</Link></li>
+                <li><Link href="#" className="hover:text-white transition-colors">SAR Generator</Link></li>
+                <li><Link href="#" className="hover:text-white transition-colors">Timeline Builder</Link></li>
+              </ul>
             </div>
-            <p className="text-sm text-muted-foreground">
-              © 2026 IKENGA AI. Power Your Destiny.
+            
+            <div>
+              <h4 className="font-semibold text-white mb-4">Support</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><Link href="#" className="hover:text-white transition-colors">Learning Hub</Link></li>
+                <li><Link href="#" className="hover:text-white transition-colors">Help Centre</Link></li>
+                <li><Link href="#" className="hover:text-white transition-colors">Contact Us</Link></li>
+                <li><Link href="#" className="hover:text-white transition-colors">Report a Bug</Link></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold text-white mb-4">Legal</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+                <li><Link href="#" className="hover:text-white transition-colors">Terms of Service</Link></li>
+                <li><Link href="#" className="hover:text-white transition-colors">Legal Disclaimer</Link></li>
+                <li><Link href="#" className="hover:text-white transition-colors">Accessibility</Link></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="p-4 rounded-lg bg-[#d4a853]/10 border border-[#d4a853]/30 mb-8">
+            <p className="text-sm text-gray-300 text-center">
+              <span className="text-[#d4a853] font-semibold">Important:</span> UJRIS is a decision-support tool, not legal advice. For complex legal matters, please consult a qualified solicitor or barrister.
             </p>
           </div>
-          <div className="mt-8 pt-8 border-t border-border text-center text-xs text-muted-foreground">
-            <p>IKENGA Justice Intelligence is a case management tool for self-represented litigants. It does not provide legal advice.</p>
-            <p className="mt-2">For legal advice, please consult a qualified solicitor or barrister.</p>
+          
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-white/10">
+            <p className="text-sm text-gray-500">© 2026 UJRIS. All rights reserved. Patent pending.</p>
+            <p className="text-sm text-gray-500">Built with purpose. Powered by justice.</p>
           </div>
         </div>
       </footer>
-    </main>
+    </div>
   )
 }
