@@ -1,6 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { ContentBlockParam } from "@anthropic-ai/sdk/resources/messages/messages";
-import { jsonSchemaOutputFormat } from "@anthropic-ai/sdk/helpers/json-schema";
 
 import {
   getAnthropicApiKey,
@@ -40,7 +39,10 @@ const IKENGA_TEXT_FILE_EXTENSIONS = new Set([
   ".yml",
 ]);
 
-const ikengaGenerationSchema = {
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// Schema kept as documentation only — not passed to the API (avoids grammar size limits).
+// The system prompt instructs Claude to match this structure.
+const _ikengaGenerationSchema = {
   type: "object",
   additionalProperties: false,
   required: [
@@ -330,6 +332,7 @@ const ikengaGenerationSchema = {
     },
   },
 } as const;
+/* eslint-enable @typescript-eslint/no-unused-vars */
 
 const IKENGA_SYSTEM_PROMPT = `
 You are IKENGA, a commercial content automation engine for brands, agencies, and operators.
@@ -337,13 +340,20 @@ You are IKENGA, a commercial content automation engine for brands, agencies, and
 Your job is to turn a brief into assets that can drive awareness, leads, booked calls, sales, or email growth.
 
 Rules:
-- Output only valid JSON that matches the provided schema.
-- Make the content specific, publishable, and conversion-aware.
-- Use the uploaded files as the source of truth for tone, offer, and proof where possible.
+- Output ONLY a raw JSON object. No markdown, no code fences, no explanation before or after.
+- The JSON must have exactly these top-level keys:
+  requestSummary, brandVoiceSummary, calendar, socialPosts, videoScripts, carouselOutlines, emails, ads, executionNotes
+- calendar: array of 7 objects (dayNumber, theme, primaryGoal, channelFocus, contentAngle, callToAction)
+- socialPosts: array of 14 objects (id, dayNumber, platform, format, hook, caption, callToAction, assetBrief, hashtags)
+- videoScripts: array of 7 objects (dayNumber, title, hook, scenes[3-6], callToAction)
+- carouselOutlines: array of 7 objects (dayNumber, title, slides[5-8], callToAction)
+- emails: array of 7 objects (dayNumber, subjectLine, previewText, audienceSegment, body, callToAction)
+- ads: array of 3 objects (audience, angle, headline, primaryText, callToAction)
+- executionNotes: object with priorities[], risks[], missingInputs[]
+- Make every asset specific, publishable, and conversion-aware.
+- Use uploaded files as source of truth for tone, offer, and proof.
 - Do not use filler, generic platitudes, or placeholder phrases.
-- Keep CTAs aligned to the stated goals and offer.
 - If something important is missing, make a conservative assumption and list it in executionNotes.missingInputs.
-- Do not wrap the response in markdown.
 `.trim();
 
 export interface IkengaGenerationInput {
@@ -634,7 +644,8 @@ export async function generateIkengaContent(
   const requestId = randomId();
   const { attachments, blocks } = await buildAttachmentPayload(files);
   const client = new Anthropic({ apiKey });
-  const response = await client.messages.parse({
+
+  const response = await client.messages.create({
     model,
     max_tokens: 12_000,
     temperature: 0.6,
@@ -651,13 +662,24 @@ export async function generateIkengaContent(
         ],
       },
     ],
-    output_config: {
-      format: jsonSchemaOutputFormat(ikengaGenerationSchema),
-    },
   });
 
-  if (!response.parsed_output) {
-    throw new Error("Anthropic returned an empty structured IKENGA payload.");
+  const rawText = response.content
+    .filter((block): block is Anthropic.TextBlock => block.type === "text")
+    .map((block) => block.text)
+    .join("");
+
+  if (!rawText.trim()) {
+    throw new Error("Anthropic returned an empty IKENGA payload.");
+  }
+
+  let parsed: unknown;
+  try {
+    // Strip accidental markdown fences if Claude added them despite instructions.
+    const cleaned = rawText.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim();
+    parsed = JSON.parse(cleaned);
+  } catch {
+    throw new Error(`IKENGA response was not valid JSON. Raw: ${rawText.slice(0, 200)}`);
   }
 
   return {
@@ -668,11 +690,11 @@ export async function generateIkengaContent(
     usage: {
       inputTokens: response.usage.input_tokens,
       outputTokens: response.usage.output_tokens,
-      cacheCreationInputTokens: response.usage.cache_creation_input_tokens,
-      cacheReadInputTokens: response.usage.cache_read_input_tokens,
+      cacheCreationInputTokens: response.usage.cache_creation_input_tokens ?? null,
+      cacheReadInputTokens: response.usage.cache_read_input_tokens ?? null,
     },
     attachments,
-    output: response.parsed_output,
+    output: parsed,
   };
 }
 

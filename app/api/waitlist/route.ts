@@ -1,4 +1,5 @@
 import { supabase } from "../../../src/ikenga/lib/supabase";
+import { sendWelcomeEmail } from "../../../src/ikenga/email/sequences";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -84,6 +85,9 @@ export async function POST(request: Request): Promise<Response> {
       { status: 503 }
     );
   }
+
+  // Fire welcome email — non-blocking, failure does not affect signup response.
+  sendWelcomeEmail(email).catch(() => {});
 
   return Response.json(
     {

@@ -168,3 +168,11 @@ export type {
 export { deployEngine } from "./api/deployEngine";
 export { persistEngineAudit } from "./api/persistEngineAudit";
 export { supabase } from "./lib/supabase";
+
+// ------------------------------------------------------------------
+// UJU Cycle™ — proprietary response refinement layer.
+// Only the public entry points are exported. Internal logic stays hidden.
+// ------------------------------------------------------------------
+
+export { refineResponse, formatRefinedOutput, proprietaryResponse } from "./uju/refiner";
+export type { UJUDomain, UJURefinedOutput, UJURefinementInput } from "./uju/types";
