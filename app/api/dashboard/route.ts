@@ -7,6 +7,7 @@
 
 import { supabase } from "../../../src/ikenga/lib/supabase";
 import { getSessionEmail } from "../../../src/ikenga/lib/session";
+import { getAdminProfile } from "../../../src/lib/super-admin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -15,6 +16,26 @@ export async function GET(): Promise<Response> {
   const email = await getSessionEmail();
   if (!email) {
     return Response.json({ error: "Not logged in." }, { status: 401 });
+  }
+
+  // Super admin bypass — full access, no limits
+  const adminProfile = getAdminProfile(email);
+  if (adminProfile?.isSuperAdmin) {
+    return Response.json({
+      email,
+      displayName: adminProfile.name,
+      tier: "pro",
+      proType: "super_admin",
+      proExpires: null,
+      gensUsed: 0,
+      gensLimit: null,
+      memberSince: new Date().toISOString(),
+      logs: [],
+      pendingPayments: [],
+      isAdmin: true,
+      adminRole: adminProfile.role,
+      adminPermissions: adminProfile.permissions,
+    });
   }
 
   // Fetch profile — tolerate table-not-found errors
@@ -87,6 +108,8 @@ export async function GET(): Promise<Response> {
     }
   }
 
+  const contentAdminProfile = getAdminProfile(email);
+
   return Response.json({
     email: profile.email,
     displayName: profile.display_name,
@@ -98,5 +121,7 @@ export async function GET(): Promise<Response> {
     memberSince: profile.created_at,
     logs: logs ?? [],
     pendingPayments: pendingPayments ?? [],
+    isAdmin: Boolean(contentAdminProfile),
+    adminRole: contentAdminProfile?.role ?? null,
   });
 }

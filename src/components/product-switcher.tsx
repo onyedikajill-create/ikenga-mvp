@@ -31,17 +31,14 @@ export function ProductSwitcher({ active, onChange }: Props) {
               background: isActive ? p.bgColor : "transparent",
               border:     isActive ? `1px solid ${p.borderColor}` : "1px solid transparent",
               borderRadius: 8,
-              padding: "8px 16px",
-              fontSize: 13,
-              fontWeight: 700,
-              color:   isActive ? p.color : "#444",
+              padding: "8px 14px",
               cursor: "pointer",
-              letterSpacing: "0.06em",
               transition: "all 0.15s",
-              whiteSpace: "nowrap",
+              textAlign: "center",
             }}
           >
-            {id}
+            <div style={{ fontSize: 13, fontWeight: 700, color: isActive ? p.color : "#444", letterSpacing: "0.06em", lineHeight: 1 }}>{id}</div>
+            <div style={{ fontSize: 9, fontWeight: 500, color: isActive ? p.color + "99" : "#2a2a2a", letterSpacing: "0.05em", marginTop: 3, whiteSpace: "nowrap" }}>{p.tagline.split(".")[0]}</div>
           </button>
         );
       })}

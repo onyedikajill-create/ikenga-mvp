@@ -34,20 +34,9 @@ export type {
 // Orchestration brainstem.
 // ------------------------------------------------------------------
 
-export { AGENTS, getAgentById, getPipelineAgents } from "./orchestration/agents";
-export {
-  DEFAULT_PIPELINE,
-  consolePipelineLogger,
-} from "./orchestration/pipeline";
-export { runPipeline } from "./orchestration/runPipeline";
-export type {
-  PipelineDefinition,
-  PipelineInput,
-  PipelineResult,
-  PipelineRunRecord,
-  PipelineStepDefinition,
-  StageOutput,
-} from "./orchestration/pipeline";
+export { AGENTS, runAgent } from "./orchestration/agents";
+export { runOrchestration } from "./orchestration/engine";
+export { TASK_POLICIES } from "./orchestration/policies";
 
 // ------------------------------------------------------------------
 // Governance layer.

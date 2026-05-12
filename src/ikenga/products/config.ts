@@ -24,7 +24,7 @@ export interface SampleOutput {
   preview: string;
 }
 
-export type ProductId = "IKENGA" | "JUO" | "OBA" | "OMENALA";
+export type ProductId = "IKENGA" | "JUO" | "OBA" | "OMENALA" | "ICHEOKU";
 
 export const PRODUCTS: Record<ProductId, ProductConfig> = {
 
@@ -91,8 +91,8 @@ export const PRODUCTS: Record<ProductId, ProductConfig> = {
   OBA: {
     id:          "OBA",
     name:        "OBA",
-    tagline:     "Speak like royalty.",
-    description: "Premium brand voice engine. Authoritative, commanding, built for category leaders and luxury brands.",
+    tagline:     "Ọba bụ ebe ị ga-ahụ ihe Ikenga jiri dị ebube.",
+    description: "Oba — The barn where Ikenga's glory is revealed. Abundance, heritage, revealed greatness, prosperity.",
     color:       "#c084fc",
     bgColor:     "#080010",
     borderColor: "#2a0050",
@@ -147,9 +147,38 @@ export const PRODUCTS: Record<ProductId, ProductConfig> = {
       },
     ],
   },
+  ICHEOKU: {
+    id:          "ICHEOKU",
+    name:        "ICHEOKU",
+    tagline:     "The Gathering of Voices",
+    description: "Community dialogue and collective wisdom engine. Every voice matters. The circle is not complete until all have spoken.",
+    color:       "#f97316",
+    bgColor:     "#0a0400",
+    borderColor: "#3a1400",
+    tone:        "communal, dialogue-driven, inclusive, wisdom-gathering, collective",
+    toneDirective:
+      "Write with the energy of the gathering circle. This content invites participation — it opens loops, asks genuine questions, and makes the audience feel their voice completes the work. Every piece should create dialogue, not broadcast. Build the circle.",
+    sampleOutputs: [
+      {
+        type:    "Social post",
+        label:   "Community",
+        preview: "The circle is not complete until all have spoken. We have been building this in public for a year — but this decision belongs to the community. Tell us what you see that we cannot.",
+      },
+      {
+        type:    "Email subject",
+        label:   "Gathering",
+        preview: "We asked. You answered. Here is what the community told us — and what we are doing about it.",
+      },
+      {
+        type:    "Video hook",
+        label:   "Live",
+        preview: "I am not going to tell you what the right answer is. Because I genuinely do not know. And I think the people watching this do.",
+      },
+    ],
+  },
 };
 
-export const PRODUCT_IDS: ProductId[] = ["IKENGA", "JUO", "OBA", "OMENALA"];
+export const PRODUCT_IDS: ProductId[] = ["IKENGA", "JUO", "OBA", "OMENALA", "ICHEOKU"];
 
 export function getProduct(id: string): ProductConfig {
   return PRODUCTS[(id as ProductId)] ?? PRODUCTS.IKENGA;

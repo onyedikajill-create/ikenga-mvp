@@ -6,7 +6,8 @@
 // ============================================================
 
 import type { EngineId, SemVer } from "../engine_types";
-import type { AgentId, SupportedAgentModel } from "./agents";
+import type { AgentId } from "./types";
+type SupportedAgentModel = string;
 
 // ------------------------------------------------------------------
 // Pipeline lifecycle state.
@@ -183,7 +184,7 @@ export const DEFAULT_PIPELINE: PipelineDefinition = {
       name: "Claude Draft",
       description: "Creates the first structured response from the user prompt.",
       kind: "agent",
-      agentId: "claude-primary",
+      agentId: "StrategistAgent" as AgentId,
       timeoutMs: 15000,
     },
     {
@@ -191,7 +192,7 @@ export const DEFAULT_PIPELINE: PipelineDefinition = {
       name: "GPT Review",
       description: "Reviews the Claude draft and adds a second perspective.",
       kind: "agent",
-      agentId: "gpt-reviewer",
+      agentId: "CriticAgent" as AgentId,
       dependsOn: ["claude-draft"],
       optional: true,
       timeoutMs: 15000,

@@ -61,36 +61,107 @@ function extractEssence(text: string): string {
 }
 
 // ------------------------------------------------------------------
-// J — Prioritise: find the single highest-leverage action.
+// J — Prioritise: derive the highest-leverage action from the input.
 // ------------------------------------------------------------------
 
-const ACTION_PATTERNS = [
-  /(?:you should|you need to|try to)\s+([^.!?]{10,120})/i,
-  /(?:recommend|suggest|advise)\s+(?:that\s+)?(?:you\s+)?([^.!?]{10,120})/i,
-  /(?:start by|begin with|first(?:,|\s+step)?)\s+([^.!?]{10,120})/i,
-  /(?:the key is to|the most important step is to)\s+([^.!?]{10,120})/i,
-];
-
-const DOMAIN_FALLBACK_ACTIONS: Record<UJUDomain, string> = {
-  brand:      "Define your core brand promise in one sentence and publish it today.",
-  content:    "Publish one piece of authentic, unpolished content in the next hour.",
-  legal:      "Document everything. Build a timestamped timeline of events right now.",
-  waste:      "Audit your primary waste stream for seven consecutive days.",
-  finance:    "Identify your single largest cost centre and challenge every line item.",
-  government: "Map the decision-maker chain before submitting any formal request.",
-  identity:   "Collect and verify the minimum identity attributes your process requires.",
-  general:    "Take the smallest possible action toward your goal within the next 30 minutes.",
+// Igbo cultural term glossary — used to enrich responses for Igbo queries.
+const IGBO_CULTURAL_TERMS: Record<string, { meaning: string; contentAngle: string }> = {
+  "oji":       { meaning: "Kola nut — the sacred gift of welcome, respect, and covenant", contentAngle: "Show how your brand welcomes its community the way Oji welcomes a guest. The first touch matters most." },
+  "gini bu oji": { meaning: "What is Kola nut? — a question about the foundation of welcome and honour", contentAngle: "Tell the story of what your brand stands for at its root. What is the Oji of your offer — the thing that says 'you are welcome here'?" },
+  "osu":       { meaning: "An Igbo term historically misused by colonial forces — there is no caste system in authentic Igbo culture. Every person belongs.", contentAngle: "Build content around radical inclusion. Your brand has no Osu — no one is too marginal, too late, or too small to belong." },
+  "gini bu osu": { meaning: "A question about belonging and who is excluded — your brand should have no exclusions", contentAngle: "Write a bold inclusion statement: who your brand is for, who it is not for, and the explicit commitment to belonging." },
+  "ikuchi nwanyi": { meaning: "The power/authority of a woman — Igbo women historically held commercial, spiritual, and communal authority", contentAngle: "Build content around female authority and economic power. Celebrate the Ikuchi Nwanyi of your audience — their power, not just their identity." },
+  "chi":       { meaning: "Personal guardian spirit assigned by Chiukwu at birth — the divine force within each person", contentAngle: "Write content about the irreducible, authentic nature of your brand. Chi does not compromise. What is the thing your brand refuses to dilute?" },
+  "ikenga":    { meaning: "The sacred carved symbol and shrine of your Chi — personal achievement, strength, forward motion", contentAngle: "Tell the story of what your brand has built and is still building. Motion is the message. What is in motion right now?" },
+  "ndidi":     { meaning: "Patience — the root of 'Di' (husband). A mark of true maturity.", contentAngle: "Write about the long game. What is the thing your brand is building slowly and well — not chasing virality, but compounding?" },
+  "omenala":   { meaning: "The way of the land — customs, cultural values, and traditions of a people", contentAngle: "Show how your brand is rooted in a living culture, not just an aesthetic. What tradition does your brand protect and transmit?" },
+  "igba boi":  { meaning: "Apprenticeship tradition — 7 years of service, then the master blesses you to exceed him", contentAngle: "Write about the teaching relationship your brand has with its audience. What do you want them to surpass you in?" },
 };
 
-function findPriorityAction(essence: string, domain: UJUDomain): string {
-  for (const pattern of ACTION_PATTERNS) {
-    const match = essence.match(pattern);
-    if (match?.[1]) {
-      const action = match[1].trim().replace(/,\s*$/, "");
-      // Capitalise first letter.
-      return action.charAt(0).toUpperCase() + action.slice(1) + ".";
+// Extract the most specific actionable phrase from freeform brand text.
+function extractBrandAction(text: string): string | null {
+  // Look for explicit goals
+  const goalPatterns = [
+    /(?:want to|trying to|goal is to|aim to|need to|plan to)\s+([^.!?,]{10,100})/i,
+    /(?:grow|launch|build|increase|drive|expand|reach)\s+([^.!?,]{5,80})/i,
+    /(?:for|targeting|aimed at)\s+([^.!?,]{5,80})\s+(?:who|that|aged)/i,
+  ];
+  for (const p of goalPatterns) {
+    const m = text.match(p);
+    if (m?.[1]) return m[1].trim().replace(/,\s*$/, "");
+  }
+  return null;
+}
+
+// Detect if the input contains an Igbo cultural term.
+function detectIgboTerm(text: string): { term: string; data: { meaning: string; contentAngle: string } } | null {
+  const lower = text.toLowerCase();
+  for (const [term, data] of Object.entries(IGBO_CULTURAL_TERMS)) {
+    if (lower.includes(term)) return { term, data };
+  }
+  return null;
+}
+
+// Extract brand name from input.
+function extractBrand(text: string): string {
+  const m = text.match(/(?:brand|called|named|my brand is|we are|we sell)[:\s]+([A-Z][^\s,\.]{1,30})/i)
+    ?? text.match(/^([A-Z][a-zA-Z\s]{2,25})(?:\s+is|\s+sells|\s+helps)/);
+  return m?.[1]?.trim() ?? "";
+}
+
+function findPriorityAction(essence: string, domain: UJUDomain, rawInput: string): string {
+  // 1. Check for Igbo cultural term — return culturally accurate answer
+  const igboMatch = detectIgboTerm(rawInput);
+  if (igboMatch) {
+    return igboMatch.data.contentAngle;
+  }
+
+  // 2. Extract specific brand goal from the input
+  const brandGoal = extractBrandAction(rawInput);
+  const brand = extractBrand(rawInput);
+
+  if (brandGoal) {
+    const brandPrefix = brand ? `For ${brand}: ` : "";
+    switch (domain) {
+      case "brand":
+        return `${brandPrefix}Write and publish your brand's core promise around "${brandGoal.slice(0, 60)}" today — one sentence, unambiguous, public.`;
+      case "content":
+        return `${brandPrefix}Create one piece of content this week that speaks directly to "${brandGoal.slice(0, 60)}" — lead with the result your audience gets, not the product you sell.`;
+      default:
+        return `${brandPrefix}Take the single most direct action toward "${brandGoal.slice(0, 60)}" in the next 24 hours — not planning, not research. Movement.`;
     }
   }
+
+  // 3. Brand name found but no explicit goal — build from context
+  if (brand) {
+    switch (domain) {
+      case "brand":
+        return `Define what ${brand} stands for in one sentence. Publish it. That one act creates the clarity everything else is built on.`;
+      case "content":
+        return `Start ${brand}'s content with the story of why it exists — not the product, the reason. That story, told well, is your most powerful asset.`;
+      default:
+        return `Identify ${brand}'s single most urgent next action and do it today. Momentum is built in 24-hour windows, not quarterly plans.`;
+    }
+  }
+
+  // 4. Domain-specific non-generic fallbacks (extract from essence)
+  const sentences = essence.split(/[.!?]/).filter(s => s.trim().length > 15);
+  const core = sentences[0]?.trim();
+  if (core && core.length > 20) {
+    return `Your priority: ${core.charAt(0).toUpperCase() + core.slice(1).toLowerCase().replace(/\s+/g, " ")}. Do this before anything else.`;
+  }
+
+  // 5. Domain fallbacks — still specific, not generic
+  const DOMAIN_FALLBACK_ACTIONS: Record<UJUDomain, string> = {
+    brand:      "Write your brand's 'one sentence' — what you do, who it is for, and why it matters. Publish it today.",
+    content:    "Identify the single best story only you can tell. Write the first draft in the next 60 minutes.",
+    legal:      "Document everything with timestamps. Start the paper trail right now — it is your most valuable asset.",
+    waste:      "Audit your primary waste stream for seven consecutive days before drawing any conclusions.",
+    finance:    "Identify your largest cost centre and challenge every line item as if your runway depends on it.",
+    government: "Map the decision-maker chain before submitting any formal request — the meeting is decided before it begins.",
+    identity:   "Collect and verify only the minimum identity attributes your process truly requires.",
+    general:    "Name the one thing that would make the most difference if you did it today. Then do only that.",
+  };
   return DOMAIN_FALLBACK_ACTIONS[domain];
 }
 
@@ -171,8 +242,20 @@ function buildOutput(
 export function refineResponse(input: UJURefinementInput): UJURefinedOutput {
   const domain = input.domain ?? detectDomain(input.userQuery);
   const essence = extractEssence(input.rawResponse);
-  const priorityAction = findPriorityAction(essence, domain);
+  const priorityAction = findPriorityAction(essence, domain, input.rawResponse);
   const base = buildOutput(priorityAction, essence, domain);
+
+  // Enrich with Igbo cultural context when a known term is detected
+  const igboMatch = detectIgboTerm(input.rawResponse);
+  if (igboMatch) {
+    return {
+      ...base,
+      context: `${igboMatch.term.toUpperCase()}: ${igboMatch.data.meaning}`,
+      hiddenOpportunity: "Igbo cultural concepts carry deep commercial intelligence. The brands that understand their cultural roots produce content that moves people — not just clicks.",
+      domain,
+      refinedAt: new Date().toISOString(),
+    };
+  }
 
   return {
     ...base,

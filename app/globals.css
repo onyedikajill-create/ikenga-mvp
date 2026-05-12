@@ -1,16 +1,22 @@
 @import "tailwindcss";
 
 :root {
-  --background: #050505;
-  --foreground: #f9f1d2;
-  --font-sans: "Aptos", "Trebuchet MS", "Segoe UI", sans-serif;
-  --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua",
-    Georgia, serif;
+  --background:      #0A0A0A;
+  --foreground:      #F9F1D2;
+  --gold:            #C9A84C;
+  --gold-bright:     #FFD700;
+  --forest:          #1B3A2D;
+  --forest-light:    #2a5940;
+  --dark:            #0A0A0A;
+  --white:           #FFFFFF;
+
+  --font-sans:    var(--font-sans, "Inter", "Segoe UI", system-ui, sans-serif);
+  --font-display: var(--font-display, "Playfair Display", "Iowan Old Style", Georgia, serif);
 }
 
 @theme inline {
   --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-foreground:  var(--foreground);
 }
 
 html {
@@ -23,10 +29,18 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "kern" 1, "liga" 1;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
 }
 
 ::selection {
-  background: rgba(255, 215, 0, 0.9);
+  background: rgba(201, 168, 76, 0.85);
   color: #120d00;
 }
 
@@ -36,4 +50,135 @@ input,
 textarea,
 select {
   -webkit-tap-highlight-color: transparent;
+}
+
+/* ── Gold button — primary action ────────────────────────────── */
+.btn-gold {
+  position: relative;
+  overflow: hidden;
+  padding: 12px 28px;
+  border-radius: 100px;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.03em;
+  color: #000;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #C9A84C 0%, #FFD700 50%, #C9A84C 100%);
+  background-size: 200% 100%;
+  transition: background-position 0.35s ease, transform 0.18s ease, box-shadow 0.25s ease;
+  box-shadow: 0 4px 16px rgba(201, 168, 76, 0.3);
+}
+.btn-gold:hover {
+  background-position: 100% 0;
+  transform: scale(1.03) translateY(-1px);
+  box-shadow: 0 8px 30px rgba(201, 168, 76, 0.55);
+}
+.btn-gold:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 8px rgba(201, 168, 76, 0.3);
+}
+.btn-gold:disabled {
+  background: #222;
+  color: #444;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── Gold outline button — secondary ─────────────────────────── */
+.btn-outline-gold {
+  padding: 10px 24px;
+  border-radius: 100px;
+  font-weight: 600;
+  font-size: 13px;
+  background: transparent;
+  border: 2px solid #C9A84C;
+  color: #C9A84C;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+.btn-outline-gold:hover {
+  background: #C9A84C;
+  color: #000;
+  transform: scale(1.02);
+  box-shadow: 0 4px 18px rgba(201, 168, 76, 0.35);
+}
+.btn-outline-gold:active {
+  transform: scale(0.97);
+}
+
+/* ── Dark card with gold hover ────────────────────────────────── */
+.card-dark {
+  background: #0a0a0a;
+  border: 1px solid #1e1e1e;
+  border-radius: 14px;
+  transition: border-color 0.22s ease, box-shadow 0.22s ease, transform 0.2s ease;
+}
+.card-dark:hover {
+  border-color: rgba(201, 168, 76, 0.45);
+  box-shadow: 0 4px 28px rgba(201, 168, 76, 0.08);
+  transform: translateY(-2px);
+}
+
+/* ── Forest card ─────────────────────────────────────────────── */
+.card-forest {
+  background: #1B3A2D;
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  border-radius: 14px;
+  transition: border-color 0.22s ease, box-shadow 0.22s ease;
+}
+.card-forest:hover {
+  border-color: rgba(201, 168, 76, 0.55);
+  box-shadow: 0 4px 24px rgba(27, 58, 45, 0.5);
+}
+
+/* ── Backdrop blur modal base ─────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+/* ── Smooth transitions everywhere ───────────────────────────── */
+* {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Gold text gradient ───────────────────────────────────────── */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #C9A84C, #FFD700, #C9A84C);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Pulse animation ─────────────────────────────────────────── */
+@keyframes ik-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.82); }
+}
+
+@keyframes ik-fadein {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.ik-fadein {
+  animation: ik-fadein 0.35s ease forwards;
+}
+
+/* ── Responsive helpers ──────────────────────────────────────── */
+@media (max-width: 640px) {
+  .hide-mobile { display: none !important; }
+}
+@media (min-width: 641px) {
+  .hide-desktop { display: none !important; }
 }

@@ -647,7 +647,7 @@ export async function generateIkengaContent(
 
   const response = await client.messages.create({
     model,
-    max_tokens: 12_000,
+    max_tokens: 16_000,
     temperature: 0.6,
     system: IKENGA_SYSTEM_PROMPT,
     messages: [
@@ -679,7 +679,22 @@ export async function generateIkengaContent(
     const cleaned = rawText.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim();
     parsed = JSON.parse(cleaned);
   } catch {
-    throw new Error(`IKENGA response was not valid JSON. Raw: ${rawText.slice(0, 200)}`);
+    // Response may have been truncated mid-JSON (stop_reason === "max_tokens").
+    // Attempt recovery: walk backwards from the end to find the last valid closing brace.
+    const cleaned = rawText.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim();
+    let recovered: unknown | null = null;
+    for (let i = cleaned.length - 1; i > 0; i--) {
+      if (cleaned[i] === "}") {
+        try {
+          recovered = JSON.parse(cleaned.slice(0, i + 1));
+          break;
+        } catch { /* keep scanning */ }
+      }
+    }
+    if (!recovered) {
+      throw new Error(`IKENGA response was not valid JSON. stop_reason=${response.stop_reason}. Raw: ${rawText.slice(0, 300)}`);
+    }
+    parsed = recovered;
   }
 
   return {
@@ -698,3 +713,189 @@ export async function generateIkengaContent(
   };
 }
 
+// ── Atomic generation ────────────────────────────────────────
+// 1 item per API call — max_tokens=2000 — guaranteed no truncation.
+// 5-day schema: 10 social posts + 5 videos + 5 emails + 1 ads call = 21 calls.
+
+export type AtomicType = "social_post" | "video_script" | "email" | "ads";
+
+// Compact brief for atomic calls — no "build a 7-day pack" preamble that
+// confuses the model into over-generating beyond the token budget.
+function buildAtomicBrief(input: IkengaGenerationInput): string {
+  const parts = [
+    `Brand: ${input.brand}`,
+    `Goals: ${input.goals}`,
+  ];
+  if (input.niche)    parts.push(`Niche: ${input.niche}`);
+  if (input.audience) parts.push(`Audience: ${input.audience}`);
+  if (input.tone)     parts.push(`Tone: ${input.tone}`);
+  // Strip the long PRODUCT VOICE DIRECTIVE from notes — already in system prompt via product config
+  const shortNotes = (input.notes ?? "").replace(/PRODUCT VOICE DIRECTIVE:[^]*/, "").trim();
+  if (shortNotes)     parts.push(`Notes: ${shortNotes.slice(0, 200)}`);
+  return parts.join("\n");
+}
+
+const ATOMIC_PROMPTS: Record<AtomicType, (day: number, platform: string) => string> = {
+  social_post: (day, platform) =>
+    `You are IKENGA. Output ONLY a raw JSON object — no markdown, no fences, no explanation.
+Schema: {"hook":"string","caption":"string","callToAction":"string","hashtags":["string"]}
+Task: Write 1 ${platform} post for Day ${day}.
+Rules: hook ≤18 words. caption 60-100 words. callToAction ≤12 words. hashtags 4-5 items.`,
+
+  video_script: (day, _p) =>
+    `You are IKENGA. Output ONLY a raw JSON object — no markdown, no fences, no explanation.
+Schema: {"title":"string","hook":"string","scenes":[{"beat":"string","narration":"string"}],"callToAction":"string"}
+Task: Write 1 short-form video script for Day ${day}.
+Rules: title ≤8 words. hook ≤15 words. scenes: exactly 3, narration 30-50 words each. callToAction ≤12 words.`,
+
+  email: (day, _p) =>
+    `You are IKENGA. Output ONLY a raw JSON object — no markdown, no fences, no explanation.
+Schema: {"subjectLine":"string","previewText":"string","body":"string","callToAction":"string"}
+Task: Write 1 marketing email for Day ${day}.
+Rules: subjectLine ≤55 chars. previewText ≤80 chars. body 80-120 words. callToAction ≤12 words.`,
+
+  ads: (_d, _p) =>
+    `You are IKENGA. Output ONLY a raw JSON object — no markdown, no fences, no explanation.
+Schema: {"ads":[{"headline":"string","primaryText":"string","callToAction":"string","audience":"string"}]}
+Task: Write exactly 3 ad creatives.
+Rules: headline ≤35 chars. primaryText 40-70 words. callToAction ≤10 words. 3 angles: social-proof, pain-point, aspiration.`,
+};
+
+const ATOMIC_MAX_TOKENS: Record<AtomicType, number> = {
+  social_post:   800,
+  video_script:  900,
+  email:         700,
+  ads:           900,
+};
+
+export async function generateIkengaAtomic(
+  atomicType: AtomicType,
+  dayNumber: number,
+  platform: string,
+  input: IkengaGenerationInput,
+): Promise<IkengaGenerationResult> {
+  const apiKey = getAnthropicApiKey();
+  if (!apiKey) throw new Error("Missing ANTHROPIC_API_KEY.");
+
+  const model     = getIkengaAnthropicModel();
+  const requestId = randomId();
+  const systemPrompt = ATOMIC_PROMPTS[atomicType](dayNumber, platform);
+  const brief = buildAtomicBrief(input);
+
+  const parsed = await callClaude(systemPrompt, brief, ATOMIC_MAX_TOKENS[atomicType], apiKey, model);
+
+  return {
+    requestId,
+    model,
+    anthropicMessageId: requestId,
+    stopReason: "end_turn",
+    usage: { inputTokens: 0, outputTokens: 0, cacheCreationInputTokens: null, cacheReadInputTokens: null },
+    attachments: [],
+    output: parsed,
+  };
+}
+
+// ── Chunked generation ────────────────────────────────────────
+// Splits the 7-day pack into 4 focused calls, each well under token limits.
+
+export type GenerationChunk = "social" | "video" | "email" | "ads";
+
+const CHUNK_PROMPTS: Record<GenerationChunk, string> = {
+  social: `You are IKENGA, a commercial content engine.
+Output ONLY a raw JSON object. No markdown, no code fences, no explanation.
+Output: { "socialPosts": [...] }
+socialPosts: array of exactly 14 objects. Each object: { "id": string, "dayNumber": integer 1-7, "platform": string, "format": string, "hook": string, "caption": string, "callToAction": string, "assetBrief": string, "hashtags": string[3-8] }
+2 posts per day (days 1–7). Alternate between LinkedIn and Instagram.
+Make every hook grab attention in the first line. Make every caption specific and publishable. No filler.`,
+
+  video: `You are IKENGA, a commercial content engine.
+Output ONLY a raw JSON object. No markdown, no code fences, no explanation.
+Output: { "videoScripts": [...] }
+videoScripts: array of exactly 7 objects. Each object: { "dayNumber": integer 1-7, "title": string, "hook": string, "scenes": [{ "beat": string, "visual": string, "narration": string }], "callToAction": string }
+Each script has 3-5 scenes. Each scene is fully written narration, not a placeholder. Make these production-ready.`,
+
+  email: `You are IKENGA, a commercial content engine.
+Output ONLY a raw JSON object. No markdown, no code fences, no explanation.
+Output: { "emails": [...] }
+emails: array of exactly 7 objects. Each object: { "dayNumber": integer 1-7, "subjectLine": string, "previewText": string, "audienceSegment": string, "body": string, "callToAction": string }
+Each email body is 150-300 words, fully written, ready to send. Make the subject lines impossible to ignore.`,
+
+  ads: `You are IKENGA, a commercial content engine.
+Output ONLY a raw JSON object. No markdown, no code fences, no explanation.
+Output: { "ads": [...], "calendar": [...] }
+ads: array of exactly 3 objects. Each object: { "audience": string, "angle": string, "headline": string, "primaryText": string, "callToAction": string }
+calendar: array of exactly 7 objects. Each object: { "dayNumber": integer 1-7, "theme": string, "primaryGoal": string, "channelFocus": string[], "contentAngle": string, "callToAction": string }
+Make ads conversion-focused with strong hooks. Make the calendar a coherent 7-day narrative arc.`,
+};
+
+const CHUNK_MAX_TOKENS: Record<GenerationChunk, number> = {
+  social: 6_000,
+  video:  6_000,
+  email:  6_000,
+  ads:    4_000,
+};
+
+async function callClaude(
+  systemPrompt: string,
+  userMessage: string,
+  maxTokens: number,
+  apiKey: string,
+  model: string,
+): Promise<unknown> {
+  const client = new Anthropic({ apiKey });
+
+  const response = await client.messages.create({
+    model,
+    max_tokens: maxTokens,
+    temperature: 0.6,
+    system: systemPrompt,
+    messages: [{ role: "user", content: userMessage }],
+  });
+
+  const rawText = response.content
+    .filter((b): b is Anthropic.TextBlock => b.type === "text")
+    .map(b => b.text)
+    .join("");
+
+  if (!rawText.trim()) throw new Error("Empty response from Claude.");
+
+  const cleaned = rawText.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim();
+
+  try {
+    return JSON.parse(cleaned);
+  } catch {
+    // Truncation recovery
+    for (let i = cleaned.length - 1; i > 0; i--) {
+      if (cleaned[i] === "}") {
+        try { return JSON.parse(cleaned.slice(0, i + 1)); }
+        catch { /* keep scanning */ }
+      }
+    }
+    throw new Error(`Chunk response not valid JSON. stop_reason=${response.stop_reason}`);
+  }
+}
+
+export async function generateIkengaChunk(
+  chunk: GenerationChunk,
+  input: IkengaGenerationInput,
+): Promise<IkengaGenerationResult> {
+  const apiKey = getAnthropicApiKey();
+  if (!apiKey) throw new Error("Missing ANTHROPIC_API_KEY.");
+
+  const model     = getIkengaAnthropicModel();
+  const requestId = randomId();
+
+  // Build the brand brief (no file attachments in chunked mode for speed)
+  const brief = buildBrief(input, []);
+  const parsed = await callClaude(CHUNK_PROMPTS[chunk], brief, CHUNK_MAX_TOKENS[chunk], apiKey, model);
+
+  return {
+    requestId,
+    model,
+    anthropicMessageId: requestId,
+    stopReason: "end_turn",
+    usage: { inputTokens: 0, outputTokens: 0, cacheCreationInputTokens: null, cacheReadInputTokens: null },
+    attachments: [],
+    output: parsed,
+  };
+}

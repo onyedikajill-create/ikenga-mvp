@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { UJUProgress, type UJUStage } from "@/src/components/uju-progress";
+import { UJUUpgradePrompt } from "@/src/components/uju-upgrade-prompt";
+import { incrementFreeQueryCount, shouldShowUpgradePrompt } from "@/src/lib/usage-tracking";
 
 interface RefineResult {
   refined?: string;
@@ -27,7 +30,15 @@ export function LiveDemo() {
   const [result,  setResult]  = useState("");
   const [loading, setLoading] = useState(false);
   const [error,   setError]   = useState("");
-  const [used,    setUsed]    = useState(false);
+  const [used,          setUsed]          = useState(false);
+  const [stage,         setStage]         = useState<UJUStage>("analyzing");
+  const [showUpgrade,   setShowUpgrade]   = useState(false);
+
+  // Simulate stage progression during loading
+  const STAGE_SEQUENCE: UJUStage[] = [
+    "analyzing", "extracting", "applying_uju", "generating", "cultural_insights", "finalizing",
+  ];
+  const STAGE_DELAYS = [0, 800, 1700, 2700, 7000, 9500];
 
   async function runRefine(text: string) {
     if (!text.trim() || loading) return;
@@ -35,25 +46,43 @@ export function LiveDemo() {
     setError("");
     setResult("");
     setInput(text);
+    setStage("analyzing");
+
+    // Advance stages with timed delays
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    STAGE_SEQUENCE.forEach((s, i) => {
+      if (STAGE_DELAYS[i] > 0) {
+        timers.push(setTimeout(() => setStage(s), STAGE_DELAYS[i]));
+      }
+    });
 
     try {
       const res = await fetch("/api/uju/refine", {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify({ input: text.trim() }),
+        body:    JSON.stringify({
+          rawResponse: text.trim(),
+          userQuery:   "Refine this brand brief into a focused content action plan with clear priorities and next steps.",
+          domain:      "content",
+        }),
       });
       const data = await res.json() as RefineResult;
 
       if (!res.ok || data.error) {
-        setError("The engine is warming up. Try again in a moment.");
+        setError(data.error ?? "Something went wrong. Please try again.");
         return;
       }
 
       setResult(data.refined ?? "");
       setUsed(true);
+      setStage("done");
+      const count = incrementFreeQueryCount();
+      if (count >= 3 || shouldShowUpgradePrompt()) setShowUpgrade(true);
     } catch {
       setError("Network error. Please try again.");
+      setStage("error");
     } finally {
+      timers.forEach(t => clearTimeout(t));
       setLoading(false);
     }
   }
@@ -165,14 +194,13 @@ export function LiveDemo() {
       </div>
       <p style={{ margin: "6px 0 0", fontSize: 11, color: "#333" }}>⌘ + Enter to run</p>
 
-      {/* Loading state */}
+      {/* UJU Progress */}
       {loading && (
-        <div style={{ marginTop: 20, padding: "16px", background: "#050505", border: "1px solid #1a1a1a", borderRadius: 10 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#FFD700", display: "inline-block", animation: "pulse 1s infinite" }} />
-            <p style={{ margin: 0, fontSize: 13, color: "#555" }}>UJU Cycle running — extracting signal, prioritising action…</p>
-          </div>
-        </div>
+        <UJUProgress
+          stage={stage}
+          tier="free"
+          onUpgrade={() => { window.location.href = "/pay"; }}
+        />
       )}
 
       {/* Error */}
@@ -211,7 +239,7 @@ export function LiveDemo() {
           {used && (
             <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid #1a1a1a", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
               <p style={{ margin: 0, fontSize: 12, color: "#555" }}>
-                The full engine produces 14 posts, 7 video scripts, 7 emails, 3 ads + calendar.
+                The full engine produces 23 assets per campaign — posts, video scripts, emails + ads.
               </p>
               <a
                 href="#waitlist"
@@ -225,6 +253,11 @@ export function LiveDemo() {
             </div>
           )}
         </div>
+      )}
+
+      {/* Upgrade prompt — after 3 free queries */}
+      {showUpgrade && !loading && (
+        <UJUUpgradePrompt onDismiss={() => setShowUpgrade(false)} />
       )}
     </div>
   );

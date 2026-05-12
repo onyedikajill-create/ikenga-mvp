@@ -257,6 +257,72 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["referral_codes"]["Insert"]>;
         Relationships: [];
       };
+      copyright_flags: {
+        Row: { id: string; content_id: string | null; content_type: string; reporter_email: string; reporter_name: string | null; description: string; ownership_proof_url: string | null; sworn: boolean; status: string; resolution_notes: string | null; flagged_by_admin: boolean; created_at: string; resolved_at: string | null; };
+        Insert: { id?: string; content_id?: string | null; content_type?: string; reporter_email: string; reporter_name?: string | null; description: string; ownership_proof_url?: string | null; sworn?: boolean; status?: string; resolution_notes?: string | null; flagged_by_admin?: boolean; created_at?: string; resolved_at?: string | null; };
+        Update: Partial<Database["public"]["Tables"]["copyright_flags"]["Insert"]>;
+        Relationships: [];
+      };
+      chi_profiles: {
+        Row: { email: string; preferred_tone: string; preferred_length: string; favorite_engine: string; thumbs_up_count: number; thumbs_down_count: number; tone_weights: unknown; recent_signals: unknown; learning_streak: number; last_learning_at: string | null; created_at: string; updated_at: string; };
+        Insert: { email: string; preferred_tone?: string; preferred_length?: string; favorite_engine?: string; thumbs_up_count?: number; thumbs_down_count?: number; tone_weights?: unknown; recent_signals?: unknown; learning_streak?: number; last_learning_at?: string | null; created_at?: string; updated_at?: string; };
+        Update: Partial<Database["public"]["Tables"]["chi_profiles"]["Insert"]>;
+        Relationships: [];
+      };
+      learning_insights: {
+        Row: { id: string; insight_type: string; engine: string | null; insight_data: unknown; confidence_score: number; created_at: string; };
+        Insert: { id?: string; insight_type: string; engine?: string | null; insight_data?: unknown; confidence_score?: number; created_at?: string; };
+        Update: Partial<Database["public"]["Tables"]["learning_insights"]["Insert"]>;
+        Relationships: [];
+      };
+      user_points: {
+        Row: { id: string; email: string; event: string; points: number; metadata: unknown; created_at: string; };
+        Insert: { id?: string; email: string; event: string; points: number; metadata?: unknown; created_at?: string; };
+        Update: Partial<Database["public"]["Tables"]["user_points"]["Insert"]>;
+        Relationships: [];
+      };
+      user_point_totals: {
+        Row: { email: string; total_points: number; chi_rank: string; updated_at: string; };
+        Insert: { email: string; total_points?: number; chi_rank?: string; updated_at?: string; };
+        Update: Partial<Database["public"]["Tables"]["user_point_totals"]["Insert"]>;
+        Relationships: [];
+      };
+      user_badges: {
+        Row: { id: string; email: string; badge_id: string; badge_name: string; earned_at: string; };
+        Insert: { id?: string; email: string; badge_id: string; badge_name: string; earned_at?: string; };
+        Update: Partial<Database["public"]["Tables"]["user_badges"]["Insert"]>;
+        Relationships: [];
+      };
+      refund_requests: {
+        Row: { id: string; email: string; payment_ref: string | null; reason: string; status: string; auto_decision: boolean; rejection_reason: string | null; forensic_snapshot: unknown; created_at: string; resolved_at: string | null; };
+        Insert: { id?: string; email: string; payment_ref?: string | null; reason: string; status?: string; auto_decision?: boolean; rejection_reason?: string | null; forensic_snapshot?: unknown; created_at?: string; resolved_at?: string | null; };
+        Update: Partial<Database["public"]["Tables"]["refund_requests"]["Insert"]>;
+        Relationships: [];
+      };
+      email_verifications: {
+        Row: { email: string; otp: string; expires_at: string; attempts: number; verified_at: string | null; created_at: string; };
+        Insert: { email: string; otp: string; expires_at: string; attempts?: number; verified_at?: string | null; created_at?: string; };
+        Update: Partial<Database["public"]["Tables"]["email_verifications"]["Insert"]>;
+        Relationships: [];
+      };
+      user_forensics: {
+        Row: { id: string; email: string; ip_addresses: string[]; topic_fingerprint: string | null; warning_count: number; warning_issued_at: string | null; banned_at: string | null; ban_reason: string | null; forensic_evidence: unknown; created_at: string; updated_at: string; };
+        Insert: { id?: string; email: string; ip_addresses?: string[]; topic_fingerprint?: string | null; warning_count?: number; warning_issued_at?: string | null; banned_at?: string | null; ban_reason?: string | null; forensic_evidence?: unknown; created_at?: string; updated_at?: string; };
+        Update: Partial<Database["public"]["Tables"]["user_forensics"]["Insert"]>;
+        Relationships: [];
+      };
+      correction_suggestions: {
+        Row: { id: string; user_email: string; content_id: string; content_type: string; original_text: string; suggested_text: string; reason: string | null; correction_type: string; status: string; verification_score: number | null; rejection_reason: string | null; applied_at: string | null; resolved_at: string | null; points_awarded: number; created_at: string; };
+        Insert: { id?: string; user_email: string; content_id?: string; content_type?: string; original_text: string; suggested_text: string; reason?: string | null; correction_type?: string; status?: string; verification_score?: number | null; rejection_reason?: string | null; applied_at?: string | null; resolved_at?: string | null; points_awarded?: number; created_at?: string; };
+        Update: Partial<Database["public"]["Tables"]["correction_suggestions"]["Insert"]>;
+        Relationships: [];
+      };
+      admin_activity_log: {
+        Row: { id: string; admin_email_hash: string; admin_role: string; action: string; target_type: string | null; target_id: string | null; metadata: unknown; created_at: string; };
+        Insert: { id?: string; admin_email_hash: string; admin_role: string; action: string; target_type?: string | null; target_id?: string | null; metadata?: unknown; created_at?: string; };
+        Update: Partial<Database["public"]["Tables"]["admin_activity_log"]["Insert"]>;
+        Relationships: [];
+      };
     };
     Views: Record<never, never>;
     Functions: Record<never, never>;

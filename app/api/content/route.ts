@@ -5,6 +5,7 @@
 
 import { supabase } from "../../../src/ikenga/lib/supabase";
 import { getSessionEmail } from "../../../src/ikenga/lib/session";
+import { awardPoints } from "../points/route";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -61,6 +62,9 @@ export async function PATCH(request: Request): Promise<Response> {
 
   if (field === "copied") {
     void supabase.from("user_events").insert({ email, event: "copy", metadata: { item_id: id } });
+  }
+  if (field === "published") {
+    void awardPoints(email, "publish", { item_id: id }).catch(() => {});
   }
 
   return Response.json({ success: true });

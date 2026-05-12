@@ -10,7 +10,8 @@
 import { randomUUID } from "node:crypto";
 
 import { canAIAccess } from "../engine_permissions";
-import { getAgentById } from "./agents";
+import { AGENTS } from "./agents";
+const getAgentById = (id: string) => AGENTS[id as keyof typeof AGENTS] ?? null;
 import {
   DEFAULT_PIPELINE,
   consolePipelineLogger,
@@ -120,17 +121,23 @@ async function executeAgentStep(
 
   const agent = getAgentById(step.agentId);
 
-  if (!canAIAccess(input.engineId, agent.model)) {
+  // Map new AgentDefinition shape to the fields this legacy runner expects
+  const agentModel    = agent?.provider === "google" ? "gemini" : "claude";
+  const agentRole     = agent?.name ?? step.agentId;
+  const agentLabel    = agent?.name ?? step.agentId;
+  const agentMaxToks  = agent?.maxTokens ?? 2048;
+
+  if (!canAIAccess(input.engineId, agentModel)) {
     return {
       stepId: step.id,
-      role: agent.role,
-      model: agent.model,
+      role: agentRole,
+      model: agentModel,
       output: "",
       tokensUsed: 0,
       durationMs: Date.now() - startedAt,
       completedAt,
       status: step.optional ? "skipped" : "failed",
-      error: `Model '${agent.model}' is not permitted to access engine '${input.engineId}'.`,
+      error: `Model '${agentModel}' is not permitted to access engine '${input.engineId}'.`,
     };
   }
 
@@ -138,19 +145,18 @@ async function executeAgentStep(
     const prompt = buildStepPrompt(step, input, stages);
 
     const output =
-      `[Placeholder ${agent.label} response]\n` +
+      `[Placeholder ${agentLabel} response]\n` +
       `Engine: ${input.engineId}\n` +
       `Step: ${step.id}\n` +
       `Prompt summary: ${input.prompt.slice(0, 180)}\n` +
-      `Resolved prompt length: ${prompt.length}\n` +
-      `API key source: ${agent.apiKeyEnvVar} (${agent.apiKeyPlaceholder})`;
+      `Resolved prompt length: ${prompt.length}`;
 
     return {
       stepId: step.id,
-      role: agent.role,
-      model: agent.model,
+      role: agentRole,
+      model: agentModel,
       output,
-      tokensUsed: Math.min(prompt.length, agent.maxTokens),
+      tokensUsed: Math.min(prompt.length, agentMaxToks),
       durationMs: Date.now() - startedAt,
       completedAt,
       status: "completed",
@@ -160,8 +166,8 @@ async function executeAgentStep(
 
     return {
       stepId: step.id,
-      role: agent.role,
-      model: agent.model,
+      role: agentRole,
+      model: agentModel,
       output: "",
       tokensUsed: 0,
       durationMs: Date.now() - startedAt,
